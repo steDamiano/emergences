@@ -38,7 +38,7 @@ app.get('/', function(request, response) {
 });
 
 // Starts the server.
-server.listen(5000, '192.168.1.231' ,function() {
+server.listen(5000, '192.168.1.28' ,function() {
   console.log('Starting server on port 5000');
 });
 
@@ -171,24 +171,26 @@ io.on('connection', function(client) {
               pos = i;
             }
         }
+        if(pos!=null){
+            // Osc stop
+            var msg = {
+                address: "/button/2",
+                args: [
+                    {
+                        type: "f",
+                        value: 0
+                    },
+                    {
+                        type: "i",
+                        value: pos
+                    }
+                ]
+            };
+            
+            console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
+            udpPort.send(msg);
+            console.log('Client Disconnected');
+        }
 
-        // Osc stop
-        var msg = {
-            address: "/button/2",
-            args: [
-                {
-                    type: "f",
-                    value: 0
-                },
-                {
-                    type: "i",
-                    value: pos
-                }
-            ]
-        };
-        
-        console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
-        udpPort.send(msg);
-        console.log('Client Disconnected');
     });
 });

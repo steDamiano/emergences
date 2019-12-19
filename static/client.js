@@ -1,4 +1,4 @@
-var socket = io.connect('http://192.168.1.231:5000');
+var socket = io.connect('http://192.168.1.28:5000');
 var isStarted = false;
 var clientID;
 var clientOwnAddress;
@@ -13,10 +13,12 @@ function startClicked(){
     
 
 function stopClicked(){
-    isStarted = false;
-    document.getElementById('freq').value = 12;
-    document.getElementById('amp').value = 0.5;
-    socket.emit('clickedStop', 'You hit stop');
+    if(isStarted){
+        isStarted = false;
+        document.getElementById('freq').value = 12;
+        document.getElementById('amp').value = 0.5;
+        socket.emit('clickedStop', 'You hit stop');
+    }
 }
 
 function changeFreq(){
