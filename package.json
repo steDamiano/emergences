@@ -1,0 +1,27 @@
+{
+  "name": "emergences",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "osc": "^2.4.1",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://steDamiano@github.com/steDamiano/emergences.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/steDamiano/emergences/issues"
+  },
+  "homepage": "https://github.com/steDamiano/emergences#readme"
+}
