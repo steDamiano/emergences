@@ -1,4 +1,4 @@
-var socket = io.connect('http://192.168.1.28:5000');
+var socket = io.connect('https://192.168.1.9:5000', {secure: true});
 var isStarted = false;
 var clientID;
 var clientOwnAddress;

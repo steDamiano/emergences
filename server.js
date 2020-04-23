@@ -4,9 +4,20 @@
 var express = require('express');
 var app = express();
 
-// Server creation
-var http = require('http');
-var server = http.Server(app);
+// // Server creation
+// var http = require('http');
+// var server = http.Server(app);
+
+// Secure Server 
+const https = require('https');
+const fs = require('fs');
+
+const server = https.createServer({
+    key: fs.readFileSync('server.key'),
+    cert: fs.readFileSync('server.cert')}, app).listen(5000, () => {
+    console.log('Listening...')
+});
+
 
 // Socket application
 var socketIO = require('socket.io');
@@ -37,10 +48,10 @@ app.get('/', function(request, response) {
   response.sendFile(path.join(__dirname, '/static/home.html'));
 });
 
-// Starts the server.
-server.listen(5000, '192.168.1.180' ,function() {
-  console.log('Starting server on port 5000');
-});
+// // Starts the server.
+// server.listen(5000, '192.168.1.9' ,function() {
+//   console.log('Starting server on port 5000');
+// });
 
 // client array
 var clients_connected = new Array(); 
