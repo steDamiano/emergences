@@ -6,6 +6,9 @@ export default class LissajousViewMediator extends ViewMediator{
       const curve = this.getCurveObject(lissajous);
       this.object3D.add(curve);
       console.log("Construct lissajous view mediator");
+
+      lissajous.addObserver("FrequencyChanged", (e) => this.onFreqChanged(e));
+      lissajous.addObserver("AmplitudeChanged", (e) => this.onAmplitudeChanged(e));
     }
 
     getCurveObject(lissajous){
@@ -52,5 +55,15 @@ export default class LissajousViewMediator extends ViewMediator{
           lissajous.meshObject.remove(lissajous.meshObject.children[i]);
         }
       }
+    }
+
+    onFreqChanged(e){
+      this.getCurveObject(e);
+      console.log("Freq changed");
+    }
+
+    onAmplitudeChanged(e){
+      this.getCurveObject(e);
+      console.log("Amp changed");
     }
 }

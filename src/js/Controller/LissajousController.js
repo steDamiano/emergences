@@ -1,5 +1,7 @@
 
 import MainView from '../View/MainView';
+import ChangeFrequencyCommand from '../Command/ChangeFrequencyCommand';
+import ChangeAmplitudeCommand from '../Command/ChangeAmplitudeCommand';
 
 export default class LissajousController{
     constructor(lissajous){
@@ -9,10 +11,16 @@ export default class LissajousController{
     }
 
     onFreqChange(freq){
-        this.lissajousCurve.fx = freq / 10;
+        var frequency = freq / 10;
+        this.executeCommand(new ChangeFrequencyCommand(this.lissajousCurve, frequency));
     }
 
     onAmpChange(amp){
-        this.lissajousCurve.sizex = amp * 100;
+        var amplitude = amp * 1000;
+        this.executeCommand(new ChangeAmplitudeCommand(this.lissajousCurve, amplitude));
+    }
+
+    executeCommand(command){
+        command.execute(command);
     }
 }

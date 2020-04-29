@@ -27,7 +27,7 @@ class Lissajous extends Observable{
 
     setFrx(freq){
         this.fx = freq;
-        this.emit('FreqX Modified', null);
+        this.emit('FrequencyChanged', this);
     }
     setFry(freq){
         this.fy = freq;
@@ -40,7 +40,7 @@ class Lissajous extends Observable{
 
     setAmpX(amp){
         this.sizeX = amp;
-        this.emit('AmpX Modified', null);
+        this.emit('AmplitudeChanged', this);
     }
 
     setAmpY(amp){

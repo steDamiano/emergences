@@ -47,16 +47,16 @@ export default class MainView{
 
     onFreqChange(){
         var val = this.freqInput.value;
-        console.log("change freq, value: " + val);
+        // console.log("change freq, value: " + val);
         this.controller.onFreqChange(val);
         // This command should be in controller
-        this.lissajous.fx = val / 10;
-        this.LissajousViewMediator.getCurveObject(this.lissajous);
+        // this.lissajous.fx = val / 10;
+        //this.LissajousViewMediator.getCurveObject(this.lissajous);
     }
 
     onAmpChange(){
         var val = this.ampInput.value;
-        console.log("change amp, value: " + val);
+        // console.log("change amp, value: " + val);
         this.controller.onAmpChange(val);
     }
 }
