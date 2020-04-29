@@ -7,6 +7,8 @@ export default class MainView{
         this.lissajous = lissajous_model;
         this.renderingContext = this.createRenderingContext();
         this.LissajousViewMediator = new LissajousViewMediator(lissajous_model);
+        this.freqInput = document.getElementById('freq');
+        this.ampInput = document.getElementById('amp');
     }
 
     createRenderingContext(){
@@ -24,6 +26,8 @@ export default class MainView{
         this.raycaster = new THREE.Raycaster();
 
         window.addEventListener('resize', (e) => this.onWindowResize(), false);
+        this.freqInput.addEventListener('input', (e) => this.onFreqChange());
+        this.ampInput.addEventListener('input', (e) => this.onAmpChange());
         this.render();
     }
 
@@ -39,5 +43,20 @@ export default class MainView{
         this.renderingContext.camera.updateProjectionMatrix();
 
         this.renderingContext.renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    onFreqChange(){
+        var val = this.freqInput.value;
+        console.log("change freq, value: " + val);
+        this.controller.onFreqChange(val);
+        // This command should be in controller
+        this.lissajous.fx = val / 10;
+        this.LissajousViewMediator.getCurveObject(this.lissajous);
+    }
+
+    onAmpChange(){
+        var val = this.ampInput.value;
+        console.log("change amp, value: " + val);
+        this.controller.onAmpChange(val);
     }
 }

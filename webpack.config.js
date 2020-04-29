@@ -35,7 +35,8 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: "Webpack Output",
+      // title: "Webpack Output",
+      template: 'src/index.html'
     }),
     new CleanWebpackPlugin(),
     new webpack.ProvidePlugin({

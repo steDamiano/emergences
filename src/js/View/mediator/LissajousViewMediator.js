@@ -11,13 +11,13 @@ export default class LissajousViewMediator extends ViewMediator{
     getCurveObject(lissajous){
         const step = lissajous.step;
         // const geometry = new THREE.Geometry();
-
+        this.clearMesh(lissajous);
         lissajous.numCurveVertices = Math.floor((Math.PI * 2 + 4 * step)/step);
   
         for(var i = 0; i < lissajous.numCurveVertices; i++){
           lissajous.curveVertices[i] = new THREE.Vector3();
         }
-    
+        
         var angle = step
         for(var i = 0; i < lissajous.numCurveVertices; i++){    
           lissajous.curveVertices[i].x = lissajous.sizeX*Math.sin(lissajous.fx*angle + lissajous.phaseX);
@@ -43,5 +43,14 @@ export default class LissajousViewMediator extends ViewMediator{
         }
 
         return lissajous.meshObject;
+    }
+
+    clearMesh(lissajous) {
+      var numChildren = lissajous.meshObject.children.length;
+      if(numChildren > 0){
+        for(var i = numChildren - 1; i >= 0; i--){
+          lissajous.meshObject.remove(lissajous.meshObject.children[i]);
+        }
+      }
     }
 }

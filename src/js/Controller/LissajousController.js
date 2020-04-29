@@ -7,4 +7,12 @@ export default class LissajousController{
         this.view = new MainView(this, lissajous);
         this.view.initialize();
     }
+
+    onFreqChange(freq){
+        this.lissajousCurve.fx = freq / 10;
+    }
+
+    onAmpChange(amp){
+        this.lissajousCurve.sizex = amp * 100;
+    }
 }
