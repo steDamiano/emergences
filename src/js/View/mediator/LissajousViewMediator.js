@@ -3,6 +3,7 @@ import ViewMediator from './ViewMediator'
 export default class LissajousViewMediator extends ViewMediator{
     constructor(lissajous){
       super(lissajous);
+      this.meshObject = new THREE.Object3D();
       const curve = this.getCurveObject(lissajous);
       this.object3D.add(curve);
       console.log("Construct lissajous view mediator");
@@ -12,9 +13,11 @@ export default class LissajousViewMediator extends ViewMediator{
     }
 
     getCurveObject(lissajous){
+        console.log("Updating view");
         const step = lissajous.step;
+        // const meshObject = new THREE.Object3D();
         // const geometry = new THREE.Geometry();
-        this.clearMesh(lissajous);
+        this.clearMesh(this.meshObject);
         lissajous.numCurveVertices = Math.floor((Math.PI * 2 + 4 * step)/step);
   
         for(var i = 0; i < lissajous.numCurveVertices; i++){
@@ -42,28 +45,34 @@ export default class LissajousViewMediator extends ViewMediator{
             vertArray.push( lissajous.curveVertices[i], lissajous.curveVertices[i+1]);
             line.computeLineDistances();      
           }
-          lissajous.meshObject.add(line);
+          // lissajous.meshObject.add(line);
+          this.meshObject.add(line);
         }
 
-        return lissajous.meshObject;
+        return this.meshObject;
+        //return lissajous.meshObject;
     }
 
-    clearMesh(lissajous) {
-      var numChildren = lissajous.meshObject.children.length;
+    clearMesh(mesh) {
+      console.log(mesh);
+      var numChildren = mesh.children.length;
       if(numChildren > 0){
         for(var i = numChildren - 1; i >= 0; i--){
-          lissajous.meshObject.remove(lissajous.meshObject.children[i]);
+          mesh.remove(mesh.children[i]);
         }
       }
     }
 
     onFreqChanged(e){
-      this.getCurveObject(e);
-      console.log("Freq changed");
+      // this.getCurveObject(e);
+      // this.object3D.remove(this.curve);
+      // this.object3D = new THREE.Object3D();
+      this.object3D.add(this.getCurveObject(e));
+      // console.log("Freq changed");
     }
 
     onAmplitudeChanged(e){
-      this.getCurveObject(e);
-      console.log("Amp changed");
+      this.object3D.add(this.getCurveObject(e));
+      // console.log("Amp changed");
     }
 }

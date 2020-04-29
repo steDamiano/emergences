@@ -4,10 +4,13 @@ import ChangeFrequencyCommand from '../Command/ChangeFrequencyCommand';
 import ChangeAmplitudeCommand from '../Command/ChangeAmplitudeCommand';
 
 export default class LissajousController{
-    constructor(lissajous){
+    constructor(lissajous, lissajousRemoteMediator){
         this.lissajousCurve = lissajous;
+        this.lissajousRemoteMediator = lissajousRemoteMediator;
         this.view = new MainView(this, lissajous);
         this.view.initialize();
+        // Do we need it?
+        this.lissajousRemoteMediator.initialize();
     }
 
     onFreqChange(freq){
@@ -22,5 +25,6 @@ export default class LissajousController{
 
     executeCommand(command){
         command.execute(command);
+        this.lissajousRemoteMediator.onCommandExecuted(command);
     }
 }

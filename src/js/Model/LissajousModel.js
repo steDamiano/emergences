@@ -20,7 +20,7 @@ class Lissajous extends Observable{
         this.lines = new Array();
         this.numCurveVertices = 0.0; 
         this.meterial = "Basic";
-        this.meshObject = new THREE.Object3D();
+        // this.meshObject = new THREE.Object3D();
         this.color = "#ffffff";
         this.meshType = "Line";
     }
