@@ -1,3 +1,4 @@
+/*
 const Lissajous = require('./js/Model/LissajousModel');
 const CommandSerializer = require('./js/remote/CommandSerializer');
 
@@ -40,12 +41,12 @@ wss.on('connection', function connection(ws) {
             }
         });
     }
-    /*
-    for(const command of getInitCommands()){
-        const serializedCommand = JSON.stringify(command);
-        ws.send(serializedCommand);
-    }
-    */
+    //
+    // for(const command of getInitCommands()){
+    //     const serializedCommand = JSON.stringify(command);
+    //     ws.send(serializedCommand);
+    // }
+    
 });
 
 function executeCommand(serializedCommand){
@@ -61,4 +62,61 @@ function executeCommand(serializedCommand){
 
 function getInitCommands(){
     // Do we need it?
+}
+*/
+/// SOCKET.IO + EXPRESS
+// console.log("Running");
+const Lissajous = require('./js/Model/LissajousModel');
+const CommandSerializer = require('./js/remote/CommandSerializer');
+
+const lissajousCurve = new Lissajous();
+const commandSerializer = new CommandSerializer(lissajousCurve);
+
+
+const app = require('express')();
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+
+var connectedCounter = 0;
+var nextId = 0;
+
+server.listen(8081, () =>{
+    console.log("Server listening on port 8081");
+});
+
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html');
+});
+
+io.on('connection', (socket) =>{
+    console.log('Client connected');
+    connectedCounter++;
+    var terminationCommand = null;
+
+    socket.on('message', function incoming(message){
+        var payload = JSON.parse(message);
+        // console.log("Message: \n", payload);
+        var serializedCommand = JSON.stringify(payload.command);
+        if(payload.type == 'RUN'){
+            executeCommand(JSON.parse(serializedCommand));
+            // console.log(serializedCommand);
+            socket.broadcast.send(serializedCommand);
+        }
+        else if(payload.type == 'ON_DISCONNECT'){
+            terminationCommand = serializedCommand;
+        }
+    });
+
+    // Clients should be initialized to actual state
+});
+
+function executeCommand(serializedCommand){
+    const command = commandSerializer.deserialize(serializedCommand);
+
+    if(command){
+        command.execute();
+    }
+    else{
+        console.error('Invalid Command', serializedCommand);
+    }
 }
