@@ -78,8 +78,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
 var connectedCounter = 0;
-var nextId = 0;
-
+var clients_connected = [];
 server.listen(8081, () =>{
     console.log("Server listening on port 8081");
 });
@@ -90,7 +89,12 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) =>{
     console.log('Client connected');
+    // Assign ID to client connected
     connectedCounter++;
+    clients_connected.push(socket.handshake.address);
+    var pos = clients_connected.indexOf(socket.handshake.address);
+    io.to(socket.id).emit('client ID', {position: pos, address: socket.handshake.address});
+
     var terminationCommand = null;
 
     socket.on('message', function incoming(message){

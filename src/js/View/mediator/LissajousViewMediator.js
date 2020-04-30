@@ -10,6 +10,7 @@ export default class LissajousViewMediator extends ViewMediator{
 
       lissajous.addObserver("FrequencyChanged", (e) => this.onFreqChanged(e));
       lissajous.addObserver("AmplitudeChanged", (e) => this.onAmplitudeChanged(e));
+      lissajous.addObserver("PhaseChanged", (e) => this.onPhaseChanged(e));
     }
 
     getCurveObject(lissajous){
@@ -74,5 +75,9 @@ export default class LissajousViewMediator extends ViewMediator{
     onAmplitudeChanged(e){
       this.object3D.add(this.getCurveObject(e));
       // console.log("Amp changed");
+    }
+
+    onPhaseChanged(e){
+      this.object3D.add(this.getCurveObject(e));
     }
 }

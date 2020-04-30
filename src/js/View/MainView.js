@@ -9,6 +9,7 @@ export default class MainView{
         this.LissajousViewMediator = new LissajousViewMediator(lissajous_model);
         this.freqInput = document.getElementById('freq');
         this.ampInput = document.getElementById('amp');
+        this.phaseInput = document.getElementById('phase');
     }
 
     createRenderingContext(){
@@ -28,6 +29,7 @@ export default class MainView{
         window.addEventListener('resize', (e) => this.onWindowResize(), false);
         this.freqInput.addEventListener('input', (e) => this.onFreqChange());
         this.ampInput.addEventListener('input', (e) => this.onAmpChange());
+        this.phaseInput.addEventListener('input', (e) => this.onPhaseChange());
         this.render();
     }
 
@@ -58,5 +60,10 @@ export default class MainView{
         var val = this.ampInput.value;
         // console.log("change amp, value: " + val);
         this.controller.onAmpChange(val);
+    }
+
+    onPhaseChange(){
+        var val = this.phaseInput.value;
+        this.controller.onPhaseChange(val);
     }
 }

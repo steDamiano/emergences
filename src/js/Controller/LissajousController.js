@@ -2,6 +2,7 @@
 import MainView from '../View/MainView';
 import ChangeFrequencyCommand from '../Command/ChangeFrequencyCommand';
 import ChangeAmplitudeCommand from '../Command/ChangeAmplitudeCommand';
+import ChangePhaseCommand from '../Command/ChangePhaseCommand';
 
 export default class LissajousController{
     constructor(lissajous, lissajousRemoteMediator){
@@ -15,12 +16,18 @@ export default class LissajousController{
 
     onFreqChange(freq){
         var frequency = freq / 10;
-        this.executeCommand(new ChangeFrequencyCommand(this.lissajousCurve, frequency));
+        // console.log('id: ' + this.lissajousRemoteMediator.remoteClient.id);
+        this.executeCommand(new ChangeFrequencyCommand(this.lissajousCurve, frequency, this.lissajousRemoteMediator.remoteClient.id));
     }
 
     onAmpChange(amp){
         var amplitude = amp * 1000;
-        this.executeCommand(new ChangeAmplitudeCommand(this.lissajousCurve, amplitude));
+        this.executeCommand(new ChangeAmplitudeCommand(this.lissajousCurve, amplitude, this.lissajousRemoteMediator.remoteClient.id));
+    }
+
+    onPhaseChange(phase){
+        console.log("onPhaseChange");
+        this.executeCommand(new ChangePhaseCommand(this.lissajousCurve, phase, this.lissajousRemoteMediator.remoteClient.id));
     }
 
     executeCommand(command){

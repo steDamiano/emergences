@@ -67,7 +67,60 @@ class Lissajous extends Observable{
         this.phaseZ = phase;
         this.emit('PhaseZ Modified', null);
     }
-    
+
+    setFrequency(id, freq){
+        // console.log(id);
+        var r = id % 3;
+        console.log(r);
+        switch(id % 3){
+            case (0):
+                this.fx = freq;
+                break;
+                // console.log(this.fx);
+            case (1):
+                this.fy = freq;
+                break;
+            case (2):
+                this.fz = freq;
+        }
+        console.log(this.fx + ' '  + this.fy + ' ' + this.fz);
+
+        this.emit('FrequencyChanged', this);
+    }
+
+    setPhase(id, phase){
+        switch(id % 3){
+            case (0):
+                this.phaseX = phase;
+                break;
+            case (1):
+                this.phaseY = phase;
+                break;
+            case (2):
+                this.phaseZ = phase;
+        }
+
+        this.emit('PhaseChanged', this);
+    }
+
+    setAmplitude(id, amp){
+        switch(id % 3){
+            case (0):
+                this.sizeX = amp;
+                break;
+            case (1):
+                this.sizeY = amp;
+                break;
+            case (2):
+                this.sizeZ = amp;
+        }
+
+        this.emit('AmplitudeChanged', this);
+    }
+
+    setParameters(fx,fy,fz, ax, ay, az, phx, phy, phz){
+        // To be implemented -> set all parameters for generative part
+    }
 }
 
 module.exports = Lissajous;
