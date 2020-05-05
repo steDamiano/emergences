@@ -20,6 +20,7 @@ export default class LissajousViewMediator extends ViewMediator{
         // const geometry = new THREE.Geometry();
         this.clearMesh(this.meshObject);
         lissajous.numCurveVertices = Math.floor((Math.PI * 2 + 4 * step)/step);
+        console.log("Vertices are: " + lissajous.numCurveVertices);
   
         for(var i = 0; i < lissajous.numCurveVertices; i++){
           lissajous.curveVertices[i] = new THREE.Vector3();

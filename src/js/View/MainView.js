@@ -10,6 +10,7 @@ export default class MainView{
         this.freqInput = document.getElementById('freq');
         this.ampInput = document.getElementById('amp');
         this.phaseInput = document.getElementById('phase');
+        this.likeButton = document.getElementById('likebut');
     }
 
     createRenderingContext(){
@@ -30,6 +31,7 @@ export default class MainView{
         this.freqInput.addEventListener('input', (e) => this.onFreqChange());
         this.ampInput.addEventListener('input', (e) => this.onAmpChange());
         this.phaseInput.addEventListener('input', (e) => this.onPhaseChange());
+        this.likeButton.addEventListener('click', (e) => this.onLikeClicked());
         this.render();
     }
 
@@ -65,5 +67,10 @@ export default class MainView{
     onPhaseChange(){
         var val = this.phaseInput.value;
         this.controller.onPhaseChange(val);
+    }
+
+    onLikeClicked(){
+        // console.log("Liked configuration");
+        this.controller.onLikeClicked();
     }
 }

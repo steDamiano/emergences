@@ -1,7 +1,7 @@
 {
-  "name": "webpack-demo",
+  "name": "emergences",
   "version": "1.0.0",
-  "description": "",
+  "description": "Interactive installation for audio visualization",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -25,10 +25,13 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
+    "ar.js": "^2.2.2",
     "express": "^4.17.1",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
     "three": "^0.115.0",
+    "three.ar.js": "^0.1.8",
+    "threex": "^1.0.0",
     "websocket": "^1.0.31",
     "ws": "^7.2.5"
   }

@@ -26,8 +26,12 @@ export default class LissajousController{
     }
 
     onPhaseChange(phase){
-        console.log("onPhaseChange");
+        // console.log("onPhaseChange");
         this.executeCommand(new ChangePhaseCommand(this.lissajousCurve, phase, this.lissajousRemoteMediator.remoteClient.id));
+    }
+
+    onLikeClicked(){
+        this.lissajousRemoteMediator.sendLike();
     }
 
     executeCommand(command){

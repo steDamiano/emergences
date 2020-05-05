@@ -9,6 +9,10 @@ export default class LissajousRemoteMediator{
         // Do we need it?
     }
 
+    sendLike(){
+        this.remoteClient.sendLike();
+    }
+
     onCommandExecuted(command){
         this.remoteClient.runCommand(command);
     }

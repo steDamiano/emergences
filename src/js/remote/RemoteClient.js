@@ -36,6 +36,10 @@ export default class RemoteClient extends Observable{
         });
     }
 
+    sendLike(){
+        this.socket.emit('clickedLike', null);
+    }
+
     runCommand(command){
         this.sendCommand('RUN', command);
     }

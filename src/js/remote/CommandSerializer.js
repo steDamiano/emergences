@@ -27,6 +27,11 @@ class CommandSerializer {
                     phase: command.phase,
                     id: command.id
                 }
+            case 'LikeCommand':
+                return {
+                    className: command.className,
+                    id: command.id
+                }
         }
     }
 
@@ -38,6 +43,8 @@ class CommandSerializer {
                 return new ChangeFrequencyCommand(this.lissajous, serializedCommand.freq, serializedCommand.id);
             case 'ChangePhaseCommand':
                 return new ChangePhaseCommand(this.lissajous, serializedCommand.phase, serializedCommand.id);
+            case 'LikeCommand':
+                return new LikeCommand(this.lissajous, serializedCommand.id);
         }
 
         // If no command is found or wrong command is found

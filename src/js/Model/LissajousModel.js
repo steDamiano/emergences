@@ -21,7 +21,7 @@ class Lissajous extends Observable{
         this.numCurveVertices = 0.0; 
         this.meterial = "Basic";
         // this.meshObject = new THREE.Object3D();
-        this.color = "#ffffff";
+        this.color = "#ff0000";
         this.meshType = "Line";
     }
 
