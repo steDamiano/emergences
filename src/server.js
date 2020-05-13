@@ -74,14 +74,28 @@ const commandSerializer = new CommandSerializer(lissajousCurve);
 
 
 const app = require('express')();
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
+// const server = require('http').createServer(app);
 
 var connectedCounter = 0;
 var clients_connected = [];
-server.listen(8081, () =>{
+// server.listen(8081, '0.0.0.0', () =>{
+//     console.log("Server listening on port 8081");
+// });
+
+//HTTPS
+const fs = require('fs');
+const https = require('https');
+const options = {
+    key: fs.readFileSync('localhost+3-key.pem'),
+    cert: fs.readFileSync('localhost+3.pem')
+};
+
+var server = https.createServer(options, app);
+
+server.listen(443, '0.0.0.0', () =>{
     console.log("Server listening on port 8081");
 });
+const io = require('socket.io').listen(server);
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
