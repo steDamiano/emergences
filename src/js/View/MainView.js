@@ -23,12 +23,12 @@ export default class MainView{
     initialize(){
         
         const scene = this.renderingContext.scene;
-        // const object3D = this.LissajousViewMediator.object3D;
-        // const geometry = new THREE.BoxBufferGeometry(200, 200, 200);
-        const material = new THREE.MeshBasicMaterial({color: 0xff0000});
-        var geometry = new THREE.CylinderBufferGeometry( 0, 0.05, 0.2, 32 ).rotateX( Math.PI / 2 );
-        const mesh = new THREE.Mesh(geometry, material);
-        scene.add(mesh);
+        const object3D = this.LissajousViewMediator.object3D;
+        scene.add(object3D);
+        // const material = new THREE.MeshBasicMaterial({color: 0xff0000});
+        // var geometry = new THREE.CylinderBufferGeometry( 0, 0.05, 0.2, 32 ).rotateX( Math.PI / 2 );
+        // const mesh = new THREE.Mesh(geometry, material);
+        // scene.add(mesh);
         
         // this.raycaster = new THREE.Raycaster();
 
@@ -56,31 +56,21 @@ export default class MainView{
         this.controlAr.addEventListener('select', (e) => this.onSelect());
         this.renderingContext.scene.add(this.controlAr);
 
-        var reticle = new THREE.Mesh(
-            new THREE.RingBufferGeometry( 0.15, 0.2, 32 ).rotateX( - Math.PI / 2 ),
-            new THREE.MeshBasicMaterial()
-        );
-        reticle.matrixAutoUpdate = false;
-        reticle.visible = false;
-        this.renderingContext.scene.add( reticle );
         this.animate();
-        // this.render();
     }
 
     onSelect() {
-        var geometry = new THREE.CylinderBufferGeometry( 0, 0.05, 0.2, 32 ).rotateX( Math.PI / 2 );
-        console.log("should add");
-        var material = new THREE.MeshPhongMaterial( { color: 0xffffff * Math.random() } );
-        var mesh = new THREE.Mesh( geometry, material );
-        mesh.position.set( 0, 0, - 0.3 ).applyMatrix4( this.controlAr.matrixWorld );
-        mesh.quaternion.setFromRotationMatrix( this.controlAr.matrixWorld );
-        this.renderingContext.scene.add( mesh );
-
-        console.log(this.renderingContext.scene);
+        // var geometry = new THREE.CylinderBufferGeometry( 0, 0.05, 0.2, 32 ).rotateX( Math.PI / 2 );
+        // console.log("should add");
+        // var material = new THREE.MeshPhongMaterial( { color: 0xffffff * Math.random() } );
+        // var mesh = new THREE.Mesh( geometry, material );
+        // mesh.position.set( 0, 0, - 0.3 ).applyMatrix4( this.controlAr.matrixWorld );
+        // mesh.quaternion.setFromRotationMatrix( this.controlAr.matrixWorld );
+        // this.renderingContext.scene.add( mesh );
     }
 
     render(){
-        console.log("rendering");
+        // console.log("rendering");
         // this.renderingContext.controls.update();
         // requestAnimationFrame(() => this.render());
         this.renderingContext.renderer.render(this.renderingContext.scene, this.renderingContext.camera);

@@ -12,15 +12,15 @@ export default class RenderingContext{
         const width = window.innerWidth;
         const height = window.innerHeight;
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(70, width/height, 0.01, 20);
+        const camera = new THREE.PerspectiveCamera(45, width/height, 0.01, 10000);
         const renderer = new THREE.WebGLRenderer({antialias : true, alpha: true});
         // const controls = new THREE.TrackballControls(camera,renderer.domElement);
 
         //Camera Setup
-        // camera.position.set(500, 800, 1300);
-        // camera.lookAt(new THREE.Vector3());
-        // camera.fov /= 2;
-        // camera.updateProjectionMatrix();
+        camera.position.set(500, 800, 1300);
+        camera.lookAt(new THREE.Vector3());
+        camera.fov /= 2;
+        camera.updateProjectionMatrix();
 
         //Renderer Setup
         renderer.setSize(width, height);
