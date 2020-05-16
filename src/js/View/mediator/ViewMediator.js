@@ -5,7 +5,7 @@ export default class ViewMediator extends Observable{
         super();
         this.model = model;
         this.object3D = this.makeObject3D();
-        console.log("Construct view mediator");
+        // console.log("Construct view mediator");
     }
 
     makeObject3D(){

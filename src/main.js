@@ -8,7 +8,7 @@ const Lissajous = require('./js/Model/LissajousModel.js');
 const CommandSerializer = require('./js/remote/CommandSerializer.js');
 const lissajousCurve = new Lissajous();
 // const lissajousController = new LissajousController(lissajousCurve);
-const remoteClient = new RemoteClient('https://192.168.1.79:443', new CommandSerializer(lissajousCurve));
+const remoteClient = new RemoteClient('https://localhost:3001', new CommandSerializer(lissajousCurve));
 
 remoteClient.addObserver('Connected', (e) =>{
     console.log('Connected event from socket');

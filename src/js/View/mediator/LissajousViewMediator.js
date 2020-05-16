@@ -6,7 +6,7 @@ export default class LissajousViewMediator extends ViewMediator{
       this.meshObject = new THREE.Object3D();
       const curve = this.getCurveObject(lissajous);
       this.object3D.add(curve);
-      console.log("Construct lissajous view mediator");
+      // console.log("Construct lissajous view mediator");
 
       lissajous.addObserver("FrequencyChanged", (e) => this.onFreqChanged(e));
       lissajous.addObserver("AmplitudeChanged", (e) => this.onAmplitudeChanged(e));
@@ -14,13 +14,13 @@ export default class LissajousViewMediator extends ViewMediator{
     }
 
     getCurveObject(lissajous){
-        console.log("Updating view");
+        // console.log("Updating view");
         const step = lissajous.step;
         // const meshObject = new THREE.Object3D();
         // const geometry = new THREE.Geometry();
         this.clearMesh(this.meshObject);
         lissajous.numCurveVertices = Math.floor((Math.PI * 2 + 4 * step)/step);
-        console.log("Vertices are: " + lissajous.numCurveVertices);
+        // console.log("Vertices are: " + lissajous.numCurveVertices);
   
         for(var i = 0; i < lissajous.numCurveVertices; i++){
           lissajous.curveVertices[i] = new THREE.Vector3();
@@ -56,7 +56,7 @@ export default class LissajousViewMediator extends ViewMediator{
     }
 
     clearMesh(mesh) {
-      console.log(mesh);
+      // console.log(mesh);
       var numChildren = mesh.children.length;
       if(numChildren > 0){
         for(var i = numChildren - 1; i >= 0; i--){
