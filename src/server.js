@@ -103,11 +103,22 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) =>{
+    alreadyConnected = false;
     console.log('Client connected');
     // Assign ID to client connected
-    connectedCounter++;
-    clients_connected.push(socket.handshake.address);
-    console.log(clients_connected);
+    for(i = 0; i < clients_connected.length; i++){
+        if(clients_connected[i] == socket.handshake.address){
+            alreadyConnected = true;
+        }
+    }
+    if(!alreadyConnected){
+        connectedCounter++;
+        clients_connected.push(socket.handshake.address);
+        console.log(clients_connected);
+    } else {
+        console.log("Client is already connected");
+    }
+    
     var pos = clients_connected.indexOf(socket.handshake.address);
     io.to(socket.id).emit('client ID', {position: pos, address: socket.handshake.address});
 
@@ -133,6 +144,18 @@ io.on('connection', (socket) =>{
     });
 
     // Clients should be initialized to actual state
+
+    socket.on('disconnect', function(){
+        var pos;
+        for( var i = 0; i < clients_connected.length; i++){ 
+            if ( clients_connected[i] === socket.handshake.address) {
+              clients_connected.splice(i, 1); 
+              pos = i;
+            }
+        }
+        console.log("Client disconnected");
+        console.log(clients_connected);
+    });
 });
 
 function executeCommand(serializedCommand){
