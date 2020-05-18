@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server --https --mode development",
-    "build": "webpack --mode production"
+    "dev": "webpack-dev-server --mode development",
+    "build": "webpack --https --mode production"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +15,8 @@
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.5",
     "babel-loader": "^8.1.0",
+    "browser-sync": "^2.26.7",
+    "browser-sync-webpack-plugin": "^2.2.2",
     "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^3.5.3",
     "html-webpack-plugin": "^4.2.0",
@@ -22,7 +24,7 @@
     "style-loader": "^1.2.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3"
+    "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
     "express": "^4.17.1",

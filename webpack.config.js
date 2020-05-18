@@ -41,9 +41,17 @@ module.exports = {
     new CleanWebpackPlugin(),
     new webpack.ProvidePlugin({
       'THREE': 'three',
-    })
+    }),
+    // new BrowserSyncPlugin({
+    //   host: 'localhost',
+    //   port: '8080',
+    //   proxy: 'https://localhost:8080'
+    // }),
   ],
   devServer: {
+    https: true,
+    key: ('dev.emergences.com.key'),
+    cert: ('dev.emergences.com.crt'),
     host: '0.0.0.0',
     contentBase: './dist',
     open: true

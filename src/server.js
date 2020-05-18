@@ -86,19 +86,20 @@ var clients_connected = [];
 const fs = require('fs');
 const https = require('https');
 const options = {
-    key: fs.readFileSync('key.pem'),
-    cert: fs.readFileSync('cert.pem')
+    key: fs.readFileSync('dev.emergences.com.key'),
+    cert: fs.readFileSync('dev.emergences.com.crt')
 };
 
 var server = https.createServer(options, app);
 
 server.listen(3001, '0.0.0.0', () =>{
-    console.log("Server listening on port 8081");
+    console.log("Server listening on port 3001");
 });
 const io = require('socket.io').listen(server);
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
+    // res.end("Ciao, dal server");
 });
 
 io.on('connection', (socket) =>{
@@ -106,6 +107,7 @@ io.on('connection', (socket) =>{
     // Assign ID to client connected
     connectedCounter++;
     clients_connected.push(socket.handshake.address);
+    console.log(clients_connected);
     var pos = clients_connected.indexOf(socket.handshake.address);
     io.to(socket.id).emit('client ID', {position: pos, address: socket.handshake.address});
 
