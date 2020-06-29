@@ -64,6 +64,9 @@ function getInitCommands(){
     // Do we need it?
 }
 */
+
+var likesArray = []
+
 /// SOCKET.IO + EXPRESS
 // console.log("Running");
 const Lissajous = require('./js/Model/LissajousModel');
@@ -141,6 +144,9 @@ io.on('connection', (socket) =>{
     socket.on('clickedLike', function getLike(message){
         /// HERE Elaboration of likeing should be made: lissajousCurve contains state of curve at the moment of like.
         console.log("Lissajous actual state: " + lissajousCurve.fx, +" " +lissajousCurve.fy+" "+lissajousCurve.fz);
+
+        // stores the likes in the array to later send them to Python
+        likesArray.push([lissajousCurve.fx, lissajousCurve.fy, lissajousCurve.fz])
     });
 
     // Clients should be initialized to actual state
@@ -168,3 +174,42 @@ function executeCommand(serializedCommand){
         console.error('Invalid Command', serializedCommand);
     }
 }
+
+
+
+
+//// COMMUNICATION WITH PYTHON
+
+function sendToPy(){
+    //creates the new likes array every session
+
+var spawn = require('child_process').spawn,
+    py    = spawn('python', ['./python_script/compute.py']),
+    data = likesArray,
+    //data = [1,2,3,4,5,6,7,8,9]
+    dataString = '';
+
+    py.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+    });
+
+py.stdout.on('data', function(data){
+  dataString += data.toString();
+});
+py.stdout.on('end', function(){
+  console.log('i am (not) going to arpeggiate: ',dataString);
+});
+
+
+    py.stdin.write(JSON.stringify(data));
+    py.stdin.end();
+    askPython();
+    likesArray = [];
+}
+
+// recursive function, it's asking python every tot ms
+function askPython(){
+    setTimeout(sendToPy, 10000); // ms of the repetition 
+}
+
+askPython()
