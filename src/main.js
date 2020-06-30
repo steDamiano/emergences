@@ -1,5 +1,6 @@
 // import * as THREE from 'three';
 import 'three';
+
 import LissajousController from './js/Controller/LissajousController';
 import RemoteClient from './js/remote/RemoteClient';
 import LissajousRemoteMediator from './js/remote/LissajousRemoteMediator';
@@ -10,9 +11,9 @@ const lissajousCurve = new Lissajous();
 // const lissajousController = new LissajousController(lissajousCurve);
 
 // HERE you should put IP from your local network
-const remoteClient = new RemoteClient('https://192.168.0.108:3001', new CommandSerializer(lissajousCurve));
+const remoteClient = new RemoteClient('https://192.168.1.92:3001', new CommandSerializer(lissajousCurve));
 
-remoteClient.addObserver('Connected', (e) =>{
+remoteClient.addObserver('Connected', (e) => {
     console.log('Connected event from socket');
     const lissajousRemoteMediator = new LissajousRemoteMediator(lissajousCurve, remoteClient);
     const lissajousController = new LissajousController(lissajousCurve, lissajousRemoteMediator);

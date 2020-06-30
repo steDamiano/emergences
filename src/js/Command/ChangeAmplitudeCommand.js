@@ -1,13 +1,13 @@
-class ChangeAmplitudeCommand{
-    constructor(lissajous, amp, id){
+class ChangeAmplitudeCommand {
+    constructor(lissajous, amp, id) {
         this.lissajous = lissajous;
         this.amp = amp;
         this.className = 'ChangeAmplitudeCommand';
-        // *** Here user ID will be set to know which freq should be changed *** // 
+        // *** Here user ID will be set to know which freq should be changed *** //
         this.id = id;
     }
 
-    execute(){
+    execute() {
         this.lissajous.setAmplitude(this.id, this.amp);
     }
 }

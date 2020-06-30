@@ -46,7 +46,7 @@ wss.on('connection', function connection(ws) {
     //     const serializedCommand = JSON.stringify(command);
     //     ws.send(serializedCommand);
     // }
-    
+
 });
 
 function executeCommand(serializedCommand){
@@ -64,9 +64,6 @@ function getInitCommands(){
     // Do we need it?
 }
 */
-
-var likesArray = []
-
 /// SOCKET.IO + EXPRESS
 // console.log("Running");
 const Lissajous = require('./js/Model/LissajousModel');
@@ -95,7 +92,7 @@ const options = {
 
 var server = https.createServer(options, app);
 
-server.listen(3001, '0.0.0.0', () =>{
+server.listen(3001, '0.0.0.0', () => {
     console.log("Server listening on port 3001");
 });
 const io = require('socket.io').listen(server);
@@ -105,58 +102,57 @@ app.get('/', (req, res) => {
     // res.end("Ciao, dal server");
 });
 
-io.on('connection', (socket) =>{
+io.on('connection', (socket) => {
     alreadyConnected = false;
     console.log('Client connected');
     // Assign ID to client connected
-    for(i = 0; i < clients_connected.length; i++){
-        if(clients_connected[i] == socket.handshake.address){
+    for (i = 0; i < clients_connected.length; i++) {
+        if (clients_connected[i] == socket.handshake.address) {
             alreadyConnected = true;
         }
     }
-    if(!alreadyConnected){
+    if (!alreadyConnected) {
         connectedCounter++;
         clients_connected.push(socket.handshake.address);
         console.log(clients_connected);
     } else {
         console.log("Client is already connected");
     }
-    
+
     var pos = clients_connected.indexOf(socket.handshake.address);
-    io.to(socket.id).emit('client ID', {position: pos, address: socket.handshake.address});
+    io.to(socket.id).emit('client ID', {
+        position: pos,
+        address: socket.handshake.address
+    });
 
     var terminationCommand = null;
 
-    socket.on('message', function incoming(message){
+    socket.on('message', function incoming(message) {
         var payload = JSON.parse(message);
         // console.log("Message: \n", payload);
         var serializedCommand = JSON.stringify(payload.command);
-        if(payload.type == 'RUN'){
+        if (payload.type == 'RUN') {
             executeCommand(JSON.parse(serializedCommand));
             // console.log(serializedCommand);
             socket.broadcast.send(serializedCommand);
-        }
-        else if(payload.type == 'ON_DISCONNECT'){
+        } else if (payload.type == 'ON_DISCONNECT') {
             terminationCommand = serializedCommand;
         }
     });
 
-    socket.on('clickedLike', function getLike(message){
+    socket.on('clickedLike', function getLike(message) {
         /// HERE Elaboration of likeing should be made: lissajousCurve contains state of curve at the moment of like.
-        console.log("Lissajous actual state: " + lissajousCurve.fx, +" " +lissajousCurve.fy+" "+lissajousCurve.fz);
-
-        // stores the likes in the array to later send them to Python
-        likesArray.push([lissajousCurve.fx, lissajousCurve.fy, lissajousCurve.fz])
+        console.log("Lissajous actual state: " + lissajousCurve.fx, +" " + lissajousCurve.fy + " " + lissajousCurve.fz);
     });
 
     // Clients should be initialized to actual state
 
-    socket.on('disconnect', function(){
+    socket.on('disconnect', function() {
         var pos;
-        for( var i = 0; i < clients_connected.length; i++){ 
-            if ( clients_connected[i] === socket.handshake.address) {
-              clients_connected.splice(i, 1); 
-              pos = i;
+        for (var i = 0; i < clients_connected.length; i++) {
+            if (clients_connected[i] === socket.handshake.address) {
+                clients_connected.splice(i, 1);
+                pos = i;
             }
         }
         console.log("Client disconnected");
@@ -164,52 +160,12 @@ io.on('connection', (socket) =>{
     });
 });
 
-function executeCommand(serializedCommand){
+function executeCommand(serializedCommand) {
     const command = commandSerializer.deserialize(serializedCommand);
 
-    if(command){
+    if (command) {
         command.execute();
-    }
-    else{
+    } else {
         console.error('Invalid Command', serializedCommand);
     }
 }
-
-
-
-
-//// COMMUNICATION WITH PYTHON
-
-function sendToPy(){
-    //creates the new likes array every session
-
-var spawn = require('child_process').spawn,
-    py    = spawn('python', ['./python_script/compute.py']),
-    data = likesArray,
-    //data = [1,2,3,4,5,6,7,8,9]
-    dataString = '';
-
-    py.stderr.on('data', (data) => {
-        console.error(`stderr: ${data}`);
-    });
-
-py.stdout.on('data', function(data){
-  dataString += data.toString();
-});
-py.stdout.on('end', function(){
-  console.log('i am (not) going to arpeggiate: ',dataString);
-});
-
-
-    py.stdin.write(JSON.stringify(data));
-    py.stdin.end();
-    askPython();
-    likesArray = [];
-}
-
-// recursive function, it's asking python every tot ms
-function askPython(){
-    setTimeout(sendToPy, 10000); // ms of the repetition 
-}
-
-askPython()

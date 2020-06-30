@@ -1,14 +1,15 @@
 const ChangeAmplitudeCommand = require('../Command/ChangeAmplitudeCommand');
 const ChangeFrequencyCommand = require('../Command/ChangeFrequencyCommand');
 const ChangePhaseCommand = require('../Command/ChangePhaseCommand');
+const ChangeDampingCommand = require('../Command/ChangeDampingCommand');
 
 class CommandSerializer {
-    constructor(lissajous){
+    constructor(lissajous) {
         this.lissajous = lissajous;
     }
 
-    serialize(command){
-        switch(command.className){
+    serialize(command) {
+        switch (command.className) {
             case 'ChangeAmplitudeCommand':
                 return {
                     className: command.className,
@@ -21,12 +22,19 @@ class CommandSerializer {
                     freq: command.freq,
                     id: command.id
                 };
+
             case 'ChangePhaseCommand':
                 return {
                     className: command.className,
                     phase: command.phase,
                     id: command.id
                 }
+            case 'ChangeDampingCommand':
+                return {
+                    className: command.className,
+                    damp: command.damp,
+                    id: command.id
+                };
             case 'LikeCommand':
                 return {
                     className: command.className,
@@ -35,14 +43,16 @@ class CommandSerializer {
         }
     }
 
-    deserialize(serializedCommand){
-        switch(serializedCommand.className){
+    deserialize(serializedCommand) {
+        switch (serializedCommand.className) {
             case 'ChangeAmplitudeCommand':
                 return new ChangeAmplitudeCommand(this.lissajous, serializedCommand.amp, serializedCommand.id);
             case 'ChangeFrequencyCommand':
                 return new ChangeFrequencyCommand(this.lissajous, serializedCommand.freq, serializedCommand.id);
             case 'ChangePhaseCommand':
                 return new ChangePhaseCommand(this.lissajous, serializedCommand.phase, serializedCommand.id);
+            case 'ChangeDampingCommand':
+                return new ChangeDampingCommand(this.lissajous, serializedCommand.damp, serializedCommand.id);
             case 'LikeCommand':
                 return new LikeCommand(this.lissajous, serializedCommand.id);
         }
