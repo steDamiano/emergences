@@ -1,5 +1,6 @@
 import Observable from '../../Observable';
 import io from 'socket.io-client'
+import Lissajous from '../Model/LissajousModel';
 
 export default class RemoteClient extends Observable{
     constructor(uri, commandSerializer){
@@ -29,6 +30,8 @@ export default class RemoteClient extends Observable{
             // console.log(data);
             this.id = data.position;
             this.address = data.address;
+
+            this.emit('InitStatus', data.lissajous);
         });
 
         this.socket.on('connect', (event) =>{

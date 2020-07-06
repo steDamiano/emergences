@@ -5,18 +5,18 @@ class Lissajous extends Observable {
         super();
         //controllable parameters
         this.sizeX = 0.1,
-            this.sizeY = 0.1,
-            this.sizeZ = 0.1,
-            this.fx = 1.0,
-            this.fy = 1.0,
-            this.fz = 2.0,
-            this.dampX = 0.0;
+        this.sizeY = 0.1,
+        this.sizeZ = 0.1,
+        this.fx = 1.0,
+        this.fy = 1.0,
+        this.fz = 2.0,
+        this.dampX = 0.0;
         this.dampY = 0.0;
         this.dampZ = 0.0;
         this.phaseX = 8.0,
-            this.phaseY = 0.0,
-            this.phaseZ = 0.0,
-            this.offsetX = 0.0;
+        this.phaseY = 0.0,
+        this.phaseZ = 0.0,
+        this.offsetX = 0.0;
         this.offsetY = 0.0;
         this.offsetZ = 0.0;
         // SET INTO VIEW?

@@ -122,8 +122,10 @@ io.on('connection', (socket) => {
     var pos = clients_connected.indexOf(socket.handshake.address);
     io.to(socket.id).emit('client ID', {
         position: pos,
-        address: socket.handshake.address
+        address: socket.handshake.address,
+        lissajous: lissajousCurve,
     });
+
 
     var terminationCommand = null;
 
