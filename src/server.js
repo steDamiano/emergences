@@ -85,6 +85,7 @@ var clients_connected = [];
 //HTTPS
 const fs = require('fs');
 const https = require('https');
+const { client } = require('websocket');
 const options = {
     key: fs.readFileSync('dev.emergences.com.key'),
     cert: fs.readFileSync('dev.emergences.com.crt')
@@ -112,8 +113,17 @@ io.on('connection', (socket) => {
         }
     }
     if (!alreadyConnected) {
+        var inserted = false;
         connectedCounter++;
-        clients_connected.push(socket.handshake.address);
+        for(i = 0; i < clients_connected.length; i++){
+            if(clients_connected[i] == null){
+                clients_connected[i] = socket.handshake.address;
+                inserted = true;
+            }
+        }
+        if(!inserted){
+            clients_connected.push(socket.handshake.address);
+        }
         console.log(clients_connected);
     } else {
         console.log("Client is already connected");
@@ -153,7 +163,7 @@ io.on('connection', (socket) => {
         var pos;
         for (var i = 0; i < clients_connected.length; i++) {
             if (clients_connected[i] === socket.handshake.address) {
-                clients_connected.splice(i, 1);
+                clients_connected.splice(i, 1, null);
                 pos = i;
             }
         }
