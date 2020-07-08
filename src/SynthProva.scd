@@ -36,10 +36,10 @@ o = OSCFunc({
 SynthDef.new(\adolfo,
 	{
 		//arg msg; //OSC message
-		arg note, amp;
+		arg freq, amp;
 		var sig;
 
-		sig = Pulse.ar(note.midicps, rrand(0.01,0.5), amp);//!2 * EnvGen.ar(Env.perc,doneAction:2);
+		sig = Pulse.ar(freq, rrand(0.01,0.5), amp);//!2 * EnvGen.ar(Env.perc,doneAction:2);
 		Out.ar(0, Pan2.ar(sig, 0));}).add;
 )
 
@@ -48,12 +48,12 @@ OSCdef(\start,
     {
 		arg msg;
 		if((msg[1] > 0), {
-			x = Synth.new(\adolfo, [\note, 36, \amp, 0.5]);
+			x = Synth.new(\adolfo, [\freq, 200, \amp, 1]);
 
 
 			//freq = msg[1];
 			//amp = msg[2];
-			x.set(\freq, msg[1]*400);
+			// x.set(\freq, msg[1]*400);
 			~notes.add(x);
 			~notes.postln;
 		})
@@ -76,7 +76,7 @@ OSCdef(\stop,
 OSCdef(\changeFreq,
 	{
 		arg msg;
-		~notes[msg[2]].set(\note, 25+msg[1]);
+		~notes[msg[2]].set(\freq, msg[1] * 100);
 }, 'slider/freq')
 )
 
@@ -84,7 +84,7 @@ OSCdef(\changeFreq,
 OSCdef(\changeAmp,
 	{
 		arg msg;
-		~notes[msg[2]].set(\amp, msg[1]);
+		~notes[msg[2]].set(\amp, msg[1]*10);
 }, 'slider/amp')
 )
 

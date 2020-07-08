@@ -1,70 +1,3 @@
-/*
-const Lissajous = require('./js/Model/LissajousModel');
-const CommandSerializer = require('./js/remote/CommandSerializer');
-
-const lissajousCurve = new Lissajous();
-const commandSerializer = new CommandSerializer(lissajousCurve);
-
-var WebSocketServer = require('ws').Server, wss = new WebSocketServer({port: 8081});
-var nextId = 0;
-console.log("Running server");
-
-wss.on('connection', function connection(ws) {
-    console.log(wss.clients.length);
-    ws._socket.setKeepAlive(true);
-
-    var connectionId = nextId++;
-    var terminationCommand = null;
-    // wss.clients[wss.clients.length - 1].connectionId = connectionId;
-
-    ws.on('message', function incoming(message){
-        console.log("Message")
-        var payload = JSON.parse(message);
-        var serializedCommand = JSON.stringify(payload.command);
-
-        if(payload.type == 'ON_DISCONNECT'){
-            terminationCommand = serializedCommand;
-        }
-    });
-
-    ws.on('close', function disconnect(){
-        if(terminationCommand){
-            broadcast(terminationCommand);
-        }
-    });
-
-    function broadcast(serializedCommand){
-        executeCommand(JSON.parse(serializedCommand));
-        wss.clients.forEach(function each(client){
-            if(client.connectionId != connectionId){
-                client.send(serializedCommand);
-            }
-        });
-    }
-    //
-    // for(const command of getInitCommands()){
-    //     const serializedCommand = JSON.stringify(command);
-    //     ws.send(serializedCommand);
-    // }
-
-});
-
-function executeCommand(serializedCommand){
-    const command = commandSerializer.deserialize(serializedCommand);
-
-    if(command){
-        command.execute();
-    }
-    else{
-        console.error('Invalid Command', serializedCommand);
-    }
-}
-
-function getInitCommands(){
-    // Do we need it?
-}
-*/
-/// SOCKET.IO + EXPRESS
 // console.log("Running");
 const Lissajous = require('./js/Model/LissajousModel');
 const CommandSerializer = require('./js/remote/CommandSerializer');
@@ -72,9 +5,8 @@ const CommandSerializer = require('./js/remote/CommandSerializer');
 const lissajousCurve = new Lissajous();
 const commandSerializer = new CommandSerializer(lissajousCurve);
 
-
+/// SOCKET.IO + EXPRESS
 const app = require('express')();
-// const server = require('http').createServer(app);
 
 var connectedCounter = 0;
 var clients_connected = [];
@@ -103,10 +35,27 @@ app.get('/', (req, res) => {
     // res.end("Ciao, dal server");
 });
 
+///OSC Connection
+// Osc communication
+var osc = require("osc");
+var udpPort = new osc.UDPPort({
+    // This is the port we're listening on.
+    localAddress: "127.0.0.1",
+    localPort: 57121,
+
+    // This is where sclang is listening for OSC messages.
+    remoteAddress: "127.0.0.1",
+    remotePort: 57120,
+    metadata: true
+});
+
+// Open the osc connection
+udpPort.open();
+
 io.on('connection', (socket) => {
     alreadyConnected = false;
     console.log('Client connected');
-    // Assign ID to client connected
+    // Assign ID to client connected, clientID is the position of the client in the clients_connected array
     for (i = 0; i < clients_connected.length; i++) {
         if (clients_connected[i] == socket.handshake.address) {
             alreadyConnected = true;
@@ -135,6 +84,24 @@ io.on('connection', (socket) => {
         address: socket.handshake.address,
         lissajous: lissajousCurve,
     });
+
+    // start superCollider oscillator controlled by client ID
+    var msg = {
+        address: "/button/1",
+        args: [
+            {
+                type: "f",
+                value: 1
+            },
+            {
+                type: "s",
+                value: socket.handshake.address
+            }
+        ]
+    };
+    
+    console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
+    udpPort.send(msg);
 
 
     var terminationCommand = null;
@@ -167,6 +134,28 @@ io.on('connection', (socket) => {
                 pos = i;
             }
         }
+
+        // stop superCollider oscillator associated to client ID
+        if(pos!=null){
+            // Osc stop
+            var msg = {
+                address: "/button/2",
+                args: [
+                    {
+                        type: "f",
+                        value: 0
+                    },
+                    {
+                        type: "i",
+                        value: pos
+                    }
+                ]
+            };
+            
+            console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
+            udpPort.send(msg);
+        }
+
         console.log("Client disconnected");
         console.log(clients_connected);
     });
@@ -174,8 +163,53 @@ io.on('connection', (socket) => {
 
 function executeCommand(serializedCommand) {
     const command = commandSerializer.deserialize(serializedCommand);
-
+    
     if (command) {
+        var type = command.className;
+        //If freq command send change freq message to SC
+        if(type == 'ChangeFrequencyCommand'){
+            // send message
+            var msg = {
+                address: "/slider/freq",
+                args: [
+                    {
+                        type: "f",
+                        value: command.freq
+                    },
+                    {
+                        type: "i",
+                        value: command.id
+                    }
+                ]
+            };
+            
+            console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
+            udpPort.send(msg);    
+        }
+
+
+        //If amp command send change amp message to SC
+        else if(type == 'ChangeAmplitudeCommand'){
+            // send message
+            var msg = {
+                address: "/slider/amp",
+                args: [
+                    {
+                        type: "f",
+                        value: command.amp
+                    },
+                    {
+                        type: "i",
+                        value: command.id
+                    }
+                ]
+            };
+            
+            console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
+            udpPort.send(msg);
+        }
+
+        //execute command on server curve
         command.execute();
     } else {
         console.error('Invalid Command', serializedCommand);
