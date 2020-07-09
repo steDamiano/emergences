@@ -62,6 +62,7 @@ io.on('connection', (socket) => {
     for (i = 0; i < clients_connected.length; i++) {
         if (clients_connected[i] == socket.handshake.address) {
             alreadyConnected = true;
+            return;
         }
     }
     if (!alreadyConnected) {
@@ -71,6 +72,7 @@ io.on('connection', (socket) => {
             if(clients_connected[i] == null){
                 clients_connected[i] = socket.handshake.address;
                 inserted = true;
+                break;
             }
         }
         if(!inserted){
@@ -97,13 +99,13 @@ io.on('connection', (socket) => {
                 value: 1
             },
             {
-                type: "s",
-                value: socket.handshake.address
+                type: "i",
+                value: pos
             }
         ]
     };
     
-    // console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
+    console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
     udpPort.send(msg);
 
 
@@ -137,7 +139,8 @@ io.on('connection', (socket) => {
             if (clients_connected[i] === socket.handshake.address) {
                 clients_connected.splice(i, 1, null);
                 pos = i;
-            } else if(clients_connected[i] != null){
+            } 
+            else if(clients_connected[i] != null){
                 noClientsFlag = false;
             }
         }
@@ -159,12 +162,12 @@ io.on('connection', (socket) => {
                 ]
             };
             
-            // console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
+            console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
             udpPort.send(msg);
         }
 
         console.log("Client disconnected");
-        // console.log(clients_connected);
+        console.log(clients_connected);
 
         if(noClientsFlag){
             //Reset lissajousCurve to initial state

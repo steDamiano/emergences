@@ -11,6 +11,7 @@ b = NetAddr.new("127.0.0.1", 57120);
 o = OSCFunc({
 	arg msg, time, addr, recvPort;
 	[msg, time, addr, recvPort].postln;
+	msg[1].postln
 }, '/button/1', n);
 )
 (
@@ -54,7 +55,11 @@ OSCdef(\start,
 			//freq = msg[1];
 			//amp = msg[2];
 			// x.set(\freq, msg[1]*400);
-			~notes.add(x);
+			if(~notes[msg[2]] == nil, {
+				~notes.add(x);
+			},  {
+				~notes.put(msg[2], x);
+			});
 			~notes.postln;
 		})
 }, 'button/1')
@@ -66,7 +71,7 @@ OSCdef(\stop,
 		arg msg;
 		if((msg[1]==0 && ~notes[msg[2]]!= nil), {
 			~notes[msg[2]].free;
-			~notes.removeAt(msg[2]);
+			~notes[msg[2]] = 0;
 			~notes.postln;
 	})
 }, 'button/2')
@@ -94,3 +99,8 @@ MIDIClient.init;
 ~test.noteOn(16,60,60)
 ~test.noteOn(16,65,60)
 ~test.noteOff(16,65,60)
+~notes[0].free
+~notes.removeAt(0)
+~notes.postln
+~notes.add(Nil)
+~notes[1].postln
