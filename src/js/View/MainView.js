@@ -28,8 +28,8 @@ export default class MainView {
         this.controls;
 
 
-        this.initialize();
-        this.onSelect();
+        //this.initialize();
+        //this.onSelect();
     }
 
     createRenderingContext() {

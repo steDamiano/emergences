@@ -53,6 +53,9 @@ var udpPort = new osc.UDPPort({
 // Open the osc connection
 udpPort.open();
 
+// likes array for python
+var likesArray = []
+
 io.on('connection', (socket) => {
     noClientsFlag = false;
     alreadyConnected = false;
@@ -134,6 +137,8 @@ io.on('connection', (socket) => {
         var zAxis = [lissajousCurve.fz, lissajousCurve.sizeZ, lissajousCurve.phaseZ];
 
         var status = [xAxis, yAxis, zAxis];
+        // EDIT WITH STATUS ARRAY
+        likesArray.push([lissajousCurve.fx, lissajousCurve.fy, lissajousCurve.fz])
         console.log(status);
     });
 
@@ -240,3 +245,40 @@ function executeCommand(serializedCommand) {
         console.error('Invalid Command', serializedCommand);
     }
 }
+
+
+
+//// COMMUNICATION WITH PYTHON
+
+function sendToPy(){
+    //creates the new likes array every session
+
+var spawn = require('child_process').spawn,
+    py    = spawn('python', ['./python_script/compute.py']),
+    data = likesArray,
+    dataString = '';
+
+    py.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+    });
+
+py.stdout.on('data', function(data){
+  dataString += data.toString();
+});
+py.stdout.on('end', function(){
+  console.log('i will perform: ',dataString);
+});
+
+
+    py.stdin.write(JSON.stringify(data));
+    py.stdin.end();
+    askPython();
+    likesArray = [];
+}
+
+// recursive function, it's asking python every tot ms
+function askPython(){
+    setTimeout(sendToPy, 10000); // ms of the repetition 
+}
+
+askPython()
