@@ -12,13 +12,8 @@ def main():
 
     #create a numpy array
     np_lines = np.array(lines)
-    print(np_lines)
-
-    #use numpys sum method to find sum of all elements in the array
-    lines_sum = np.sum(np_lines)
-
-    #return the sum to the output stream
-    print(lines_sum)
+    for element in np_lines:
+        print(element, int(np.random.uniform(1,10,1)))
 
 #start process
 if __name__ == '__main__':
