@@ -11,7 +11,7 @@ const lissajousCurve = new Lissajous();
 // const lissajousController = new LissajousController(lissajousCurve);
 
 // HERE you should put IP from your local network
-const remoteClient = new RemoteClient('https://192.168.1.191:3001', new CommandSerializer(lissajousCurve));
+const remoteClient = new RemoteClient('https://192.168.1.202:3001', new CommandSerializer(lissajousCurve));
 
 remoteClient.addObserver('Connected', (e) => {
     console.log('Connected event from socket');

@@ -126,7 +126,15 @@ io.on('connection', (socket) => {
 
     socket.on('clickedLike', function getLike(message) {
         /// HERE Elaboration of likeing should be made: lissajousCurve contains state of curve at the moment of like.
-        console.log("Lissajous actual state: " + lissajousCurve.fx, +" " + lissajousCurve.fy + " " + lissajousCurve.fz);
+        // console.log("Lissajous actual state: " + lissajousCurve.fx, +" " + lissajousCurve.fy + " " + lissajousCurve.fz);
+
+        // Build actual state to send to python: {[fx, ax, phx], [fy, ay, phy], [fz, az, phz]}
+        var xAxis = [lissajousCurve.fx, lissajousCurve.sizeX, lissajousCurve.phaseX];
+        var yAxis = [lissajousCurve.fy, lissajousCurve.sizeY, lissajousCurve.phaseY];
+        var zAxis = [lissajousCurve.fz, lissajousCurve.sizeZ, lissajousCurve.phaseZ];
+
+        var status = [xAxis, yAxis, zAxis];
+        console.log(status);
     });
 
     // Clients should be initialized to actual state
