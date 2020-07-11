@@ -40,20 +40,23 @@
         
         .oscillator {
             background-color: rgba(255, 255, 255, 0.75);
-            box-shadow: 0px 0px 5px rgb(200, 200, 200);
+            box-shadow: 5px 5px 5px rgb(200, 200, 200);
             margin: 5px;
             padding: 5px;
-            background-image: -webkit-linear-gradient(90deg, rgb(165, 0, 0), rgb(102, 95, 63));
-            background-image: -moz-linear-gradient(90deg, rgb(165, 0, 0), #FFEDBC);
-            background-image: -o-linear-gradient(90deg, rgb(165, 0, 0), #FFEDBC);
+            border-left: 5px solid 1px;
+            border-radius: 10px 10px 10px 10px;
+            background-color: rgba(320, 90, 90, 0.3);
+            box-shadow: inset 5px 50px 50px rgba(228, 9, 9, 0.5), 0 0 10px 4px rgba(255, 255, 255, 0.4);
         }
         
         .frequency,
         .damping,
         .amplitude,
         .phase {
-            font-size: 10px;
-            padding: 12px;
+            font-family: 'Press Start 2P';
+            font-size: 8px;
+            padding: 15px;
+            color: rgb(255, 255, 255);
         }
         
         .slider {
@@ -66,6 +69,7 @@
             opacity: 0.5;
             -webkit-transition: .2s;
             transition: opacity .2s;
+            margin-top: 20px;
         }
         
         .slider:hover {
@@ -93,9 +97,30 @@
         }
         
         .summary {
+            font-family: 'Press Start 2P';
+            font-size: 8px;
             width: 200px;
-            font-size: 10px;
-            /*padding: 20px;*/
+            height: 11px;
+            color: rgb(255, 255, 255);
+        }
+        
+        summary::-webkit-details-marker {
+            display: none;
+        }
+        
+        details[close]>summary:before {
+            content: ">";
+            font-size: 8px;
+            margin-left: 4px;
+            margin-right: 7px;
+            top: -10px;
+        }
+        
+        details[open]>summary:before {
+            content: "X";
+            font-size: 8px;
+            margin-left: 4px;
+            margin-right: 7px;
         }
         
         .scene-container {
@@ -103,40 +128,90 @@
             display: block;
         }
         
-        #likebut {
-            /* shadow */
-            font-family: 'Helvetica', 'Arial', sans-serif;
-            display: inline-block;
-            font-size: 10px;
-            padding: 10px;
-            margin-top: 15px;
-            margin-left: 5%;
-            margin-bottom: 25px;
-            width: 90%;
-            appearance: none;
-            background-image: linear-gradient(90deg, rgb(255, 169, 169), #FFEDBC);
-            border-radius: 5px;
-        }
-        
         *:focus {
             outline: 0 !important;
+        }
+        
+        .TimerText {
+            position: absolute;
+            font-family: 'Press Start 2P';
+            color: rgb(255, 0, 0);
+            font-size: 10px;
+            font-weight: 100;
+            height: 0px;
+            right: 0px;
+            left: 0px;
+            line-height: 100px;
+            text-align: center;
+            top: 77%;
+            z-index: 2;
+        }
+        
+        time {
+            font-family: 'Press Start 2P';
+            color: rgb(255, 255, 255);
+            font-size: 12px;
+            font-weight: 100;
+            height: 0px;
+            right: 0px;
+            left: 0px;
+            line-height: 100px;
+            position: absolute;
+            text-align: center;
+            top: 80%;
+            z-index: 2;
+        }
+        
+        .heart {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            stroke-width: 2;
+            background-color: transparent;
+            border-radius: 50px;
+            left: 80%;
+            width: 50px;
+            height: 50px;
+        }
+        
+        .heart:active::before {
+            random(5);
+            -webkit-animation-play-state: paused;
+            border-radius: 500%;
+            opacity: 0;
+        }
+        
+        .heart::before {
+            content: "";
+            display: block;
+            transition: all 200ms;
+            -webkit-animation: pulse 1s steps(1) infinite;
+            width: 5px;
+            height: 5px;
+            margin: -5px 0 0 -5px;
+            box-shadow: 10px -10px #8e1a19, 15px -10px #ac0500, 25px -10px #f73f0c, 30px -10px #fa5f27, 5px -5px #740100, 10px -5px #8e0500, 15px -5px #8e1918, 20px -5px #ca1300, 25px -5px #f34f2b, 30px -5px #df351f, 35px -5px #f77c2a, 5px 0px #4b0000, 10px 0px #690100, 15px 0px #8e0f0b, 20px 0px #bf1000, 25px 0px #f84010, 30px 0px #f04222, 35px 0px #fa5724, 5px 5px #451312, 10px 5px #5a0100, 15px 5px #840e0c, 20px 5px #a51d1a, 25px 5px #ed2805, 30px 5px #d9321e, 35px 5px #f44622, 10px 10px #3b0000, 15px 10px #5d1a1b, 20px 10px #8e1a19, 25px 10px #a80700, 30px 10px #b90a00, 15px 15px #3d0000, 20px 15px #551415, 25px 15px #670100, 20px 20px #340000;
+        }
+        
+        @-webkit-keyframes pulse {
+            50% {
+                -webkit-filter: blur(0.6px);
+                -webkit-transform: translate(0px, 1px);
+            }
         }
     </style>
 
     <div class="container">
         <div class="col1">
-            <!-- <button class="but" onclick="startClicked()"> Start </button> -->
-            <!-- <button class="but" onclick="stopClicked()"> Stop </button> -->
             <template class="oscillator-template">
                 <div class="oscillator" id="oscillator">
 
                     <div class="frequency">
                         <div>Frequency: <text></text>Hz</div>
-                        <input type="range" id="freq" min="1" max="30" step=".001" class="slider" />
+                        <input type="range" id="freq" min="0.2" max="90" step="0.01" class="slider" />
                     </div>
                     <div class="damping">
                         <div>Damping: <text></text></div>
-                        <input type="range" id="damp" min="-0.004" max="0.02" step="0.001" value="0.001"
+                        <input type="range" id="damp" min="-0.002" max="0.02" step="0.001" value="0.001"
                             class="slider" />
                     </div>
                     <div class="amplitude">
@@ -148,7 +223,6 @@
                         <input type="range" id="phase" value="0" class="slider" />
                     </div>
 
-                    <button id="likebut">Like</button>
 
                 </div>
             </template>
@@ -161,17 +235,93 @@
 
             <div class="scene-container"></div>
         </div>
+        <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
+        <div class="app">
+            <button class="heart" id="likebut"></button>
+            <div class="TimerText"> <text></text></div>
+            <time id="countdown"></time>
+        </div>
+        <script src="https://192.168.1.92:3001/socket.io/socket.io.js"></script>
+
+        <div id="counter"></div>
         <script>
             document.querySelector(".left").style.height = innerHeight * 0.9 + "px";
-
             ///////////////////////////////////////////////////////////////////////////////
             // global variables
-            ///////////////////////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////////////////////
 
             let count = 40000;
             let t = 0;
-            let paused = false;
-            let freeze = false;
+            let countdownTimer;
+            var socket = io.connect('https://192.168.1.92:3001');
+
+            socket.on('Ispector', control => {
+                // console.log(control);
+                if (control.position <= 2) {
+                    document.getElementById("myDetails").style.opacity = "1";
+                } else if (control.position > 2) {
+                    document.getElementById("myDetails").style.opacity = "0";
+                }
+
+            });
+            socket.on('Time', obj => {
+                // console.log(obj);
+                if (obj) {
+                    const millis = Math.floor((Date.now() - obj.ServerTime));
+                    timer(obj.time, obj.reset);
+                }
+            });
+
+
+            function timer(obj, r) {
+                clearInterval(countdownTimer);
+                var seconds = obj;
+                var reset = r;
+                const State = document.querySelector(".TimerText text");
+                //State.innerHTML = "Next Generation";
+                if (reset == false) {
+                    State.innerHTML = "Next Generation in:";
+                    reset = true;
+                    document.getElementById('myDetails').removeEventListener('click', handleTouch);
+                } else {
+                    State.innerHTML = "On Air";
+                    reset = false;
+                    document.getElementById('myDetails').addEventListener('click', handleTouch);
+                }
+
+                function secondPassed() {
+                    var minutes = Math.round((seconds - 30) / 60),
+                        remainingSeconds = seconds % 60;
+                    if (remainingSeconds < 10) {
+                        remainingSeconds = "0" + remainingSeconds;
+                    }
+                    document.getElementById('countdown').innerHTML = minutes + ":" + remainingSeconds;
+                    if (seconds == 0 && reset == false) { ///CONTROLS ON
+                        // console.log("CONTROLS ON");
+                        seconds = 60;
+                        reset = !reset;
+                        document.getElementById("myDetails").open = true;
+                        document.getElementById('myDetails').removeEventListener('click', handleTouch);
+                        State.innerHTML = "Next Generation in:";
+                    } else if (seconds == 0 && reset == true) { ///CONTROLS OFF
+                        // console.log("CONTROLS OFF");
+                        seconds = 30;
+                        reset = !reset;
+                        document.getElementById("myDetails").open = false;
+                        document.getElementById('myDetails').addEventListener('click', handleTouch);
+                        State.innerHTML = "On Air";
+                    } else {
+                        seconds--;
+                    }
+                }
+
+                function handleTouch(e) {
+                    e.preventDefault();
+                }
+                countdownTimer = setInterval(secondPassed, 1000);
+
+
+            }
 
             ///////////////////////////////////////////////////////////////////////////////
             // create the oscillators using Oscillator() as a constructor
@@ -190,20 +340,18 @@
 
             function Oscillator() {
                 const newOscillator = document.importNode(template, true);
-
                 const self = {};
-
                 // frequency
                 const fInput = newOscillator.querySelector(".frequency input");
                 const fText = newOscillator.querySelector(".frequency text");
                 self.f = fInput.value = Math.ceil(Math.random() * 10);
-                fText.innerHTML = self.f * 100;
 
+                fText.innerHTML = self.f * 100;
 
                 fInput.oninput = function() {
                     self.f = +this.value;
+
                     fText.innerHTML = Math.ceil(self.f * 100);
-                    // console.log(self.f);
                     t = 0;
 
                 };
@@ -237,12 +385,10 @@
                 self.p = +pInput.value;
                 pText.innerHTML = self.p;
 
-                self.offsetText = newOscillator.querySelector(".offset text");
-                self.offset = 0;
-
                 pInput.oninput = function() {
                     self.p = +this.value;
                     pText.innerHTML = self.p;
+
                 };
                 document.querySelector(".left").appendChild(newOscillator);
                 return self;

@@ -26,8 +26,8 @@ export default class RenderingContext {
         const width = window.innerWidth;
         const height = window.innerHeight;
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 0, 0.50);
+        const camera = new THREE.PerspectiveCamera(15, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 0, 2);
         //set the orbit controls
 
 
@@ -78,15 +78,29 @@ export default class RenderingContext {
 
 
         let AR = document.body.appendChild(ARButton.createButton(renderer, {
-
-
             optionalFeatures: ["dom-overlay", 'dom-overlay-for-handheld-ar'],
             domOverlay: {
                 root: document.body
             }
         }));
-
-
+        ////////////////////Handle sessionIn/out/////////////////
+        /* renderer.xr.addEventListener('sessionstart',
+             function(ev) {
+                 console.log('sessionstart', ev);
+                 document.body.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+                 renderer.domElement.style.display = 'none';
+                 if (renderer.xr.getSession().environmentBlendMode != 'opaque') {
+                     room.visible = false;
+                 }
+             });
+         renderer.xr.addEventListener('sessionend',
+             function(ev) {
+                 console.log('sessionend', ev);
+                 document.body.style.backgroundColor = '#FF0000';
+                 renderer.domElement.style.display = '';
+                 room.visible = true;
+             }); */
+        //////////////////////////////
         containerElement.appendChild(renderer.domElement);
 
 

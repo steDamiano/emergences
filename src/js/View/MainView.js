@@ -26,9 +26,11 @@ export default class MainView {
         this.likeButton = document.getElementById("likebut");
         this.controlAr;
         this.controls;
+        this.material;
+        this.hue = 0;
 
 
-        //this.initialize();
+        // this.initialize();
         //this.onSelect();
     }
 
@@ -73,8 +75,9 @@ export default class MainView {
         this.reticle = new THREE.Mesh(
             new THREE.RingBufferGeometry(0.15, 0.20, 32).rotateX(-Math.PI / 2),
             new THREE.MeshBasicMaterial({
-                color: 0xffff00
-                    //side: THREE.DoubleSide
+                color: 0xffff00,
+                side: THREE.DoubleSide,
+                wireframe: true
             })
         );
         this.reticle.position.set(0, 0, 0)
@@ -90,10 +93,15 @@ export default class MainView {
             side: THREE.DoubleSide,
             wireframe: true
         });
+        this.material = material;
+        //var lineMaterial = new THREE.LineBasicMaterial({
+        //    color: "#FF000",
+        //    linewidth: 1
+        //});
         var mesh = new THREE.Mesh(this.LissajousViewMediator.lissajousGeometry, material);
         mesh.position.setFromMatrixPosition(this.reticle.matrix);
         mesh.position.set(0, 0, 0);
-        //mesh.visible = false;
+        // mesh.visible = true;
         this.renderingContext.scene.add(mesh);
         /////*********************************////////
 
@@ -103,7 +111,7 @@ export default class MainView {
         this.ampInput.addEventListener("input", (e) => this.onAmpChange());
         this.dampInput.addEventListener("input", (e) => this.onDampChange());
         this.phaseInput.addEventListener("input", (e) => this.onPhaseChange());
-        this.likeButton.addEventListener("click", (e) => this.onLikeClicked());
+        this.likeButton.addEventListener("mousedown", (e) => this.onLikeClicked());
 
         this.animate(this.LissajousViewMediator.positions);
     }
@@ -161,9 +169,15 @@ export default class MainView {
             this.renderingContext.scene,
             this.renderingContext.camera
         );
+        this.hue = this.hue + 0.001
+        if (this.hue == 1) {
+            this.hue = 0
+        }
+        this.material.color.setHSL(this.hue, 1, 0.1);
+
         if (t < 1) {
             this.renderingContext.renderer.setAnimationLoop(() =>
-                this.animate(this.LissajousViewMediator.positions)
+                this.animate(this.LissajousViewMediator.positions),
 
             );
             //this.renderingContext.composer.render(); /// SUPER EFFETTO WOW CHE DA PROBLEMI
@@ -190,13 +204,13 @@ export default class MainView {
     onDampChange() {
         var val = this.dampInput.value;
         // console.log("change amp, value: " + val);
-        this.controller.onDampChange(val * 1);
+        this.controller.onDampChange(val);
         this.animate(this.LissajousViewMediator.positions);
     }
 
     onPhaseChange() {
         var val = this.phaseInput.value;
-        this.controller.onPhaseChange(val * 1);
+        this.controller.onPhaseChange(val);
         this.animate(this.LissajousViewMediator.positions);
     }
 

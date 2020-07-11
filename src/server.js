@@ -14,11 +14,32 @@ var noClientsFlag = true;
 // server.listen(8081, '0.0.0.0', () =>{
 //     console.log("Server listening on port 8081");
 // });
+var time = 60;
+var reset = false;
 
+////////////////////////////////////////
+function secondPassed() {
+
+
+    if (time == 0 && reset == false) { //CONTROLS ON
+        time = 60;
+        reset = !reset;
+    } else if (time == 0 && reset == true) { //CONTROLS OFF
+        time = 30;
+        reset = !reset;
+    } else {
+        time--;
+    }
+}
+setInterval(secondPassed, 1000);
+
+//////////////////////////////////////
 //HTTPS
 const fs = require('fs');
 const https = require('https');
-const { client } = require('websocket');
+const {
+    client
+} = require('websocket');
 const options = {
     key: fs.readFileSync('dev.emergences.com.key'),
     cert: fs.readFileSync('dev.emergences.com.crt')
@@ -62,24 +83,24 @@ io.on('connection', (socket) => {
     alreadyConnected = false;
     console.log('Client connected');
     console.log("noclientsflag: " + noClientsFlag)
-    // Assign ID to client connected, clientID is the position of the client in the clients_connected array
+        // Assign ID to client connected, clientID is the position of the client in the clients_connected array
     for (i = 0; i < clients_connected.length; i++) {
         if (clients_connected[i] == socket.handshake.address) {
             alreadyConnected = true;
-            return;
+            break
         }
     }
     if (!alreadyConnected) {
         var inserted = false;
         connectedCounter++;
-        for(i = 0; i < clients_connected.length; i++){
-            if(clients_connected[i] == null){
+        for (i = 0; i < clients_connected.length; i++) {
+            if (clients_connected[i] == null) {
                 clients_connected[i] = socket.handshake.address;
                 inserted = true;
                 break;
             }
         }
-        if(!inserted){
+        if (!inserted) {
             clients_connected.push(socket.handshake.address);
         }
         console.log(clients_connected);
@@ -93,12 +114,21 @@ io.on('connection', (socket) => {
         address: socket.handshake.address,
         lissajous: lissajousCurve,
     });
+    /////////////////
+    io.to(socket.id).emit('Ispector', {
+        position: pos,
+        address: socket.handshake.address
+    });
 
+    socket.broadcast.emit("Time", {
+        time: time,
+        reset: reset
+    });
+    ///////////////////
     // start superCollider oscillator controlled by client ID
     var msg = {
         address: "/button/1",
-        args: [
-            {
+        args: [{
                 type: "f",
                 value: 1
             },
@@ -108,7 +138,7 @@ io.on('connection', (socket) => {
             }
         ]
     };
-    
+
     console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
     udpPort.send(msg);
 
@@ -146,25 +176,23 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', function() {
         var pos;
-        noClientsFlag = true; 
+        noClientsFlag = true;
         for (var i = 0; i < clients_connected.length; i++) {
 
             if (clients_connected[i] === socket.handshake.address) {
                 clients_connected.splice(i, 1, null);
                 pos = i;
-            } 
-            else if(clients_connected[i] != null){
+            } else if (clients_connected[i] != null) {
                 noClientsFlag = false;
             }
         }
 
         // stop superCollider oscillator associated to client ID
-        if(pos!=null){
+        if (pos != null) {
             // Osc stop
             var msg = {
                 address: "/button/2",
-                args: [
-                    {
+                args: [{
                         type: "f",
                         value: 0
                     },
@@ -174,7 +202,7 @@ io.on('connection', (socket) => {
                     }
                 ]
             };
-            
+
             console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
             udpPort.send(msg);
         }
@@ -182,7 +210,7 @@ io.on('connection', (socket) => {
         console.log("Client disconnected");
         console.log(clients_connected);
 
-        if(noClientsFlag){
+        if (noClientsFlag) {
             //Reset lissajousCurve to initial state
             console.log("Resetting curve");
             lissajousCurve.resetInitialState();
@@ -193,16 +221,15 @@ io.on('connection', (socket) => {
 
 function executeCommand(serializedCommand) {
     const command = commandSerializer.deserialize(serializedCommand);
-    
+
     if (command) {
         var type = command.className;
         //If freq command send change freq message to SC
-        if(type == 'ChangeFrequencyCommand'){
+        if (type == 'ChangeFrequencyCommand') {
             // send message
             var msg = {
                 address: "/slider/freq",
-                args: [
-                    {
+                args: [{
                         type: "f",
                         value: command.freq
                     },
@@ -212,19 +239,18 @@ function executeCommand(serializedCommand) {
                     }
                 ]
             };
-            
+
             // console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
-            udpPort.send(msg);    
+            udpPort.send(msg);
         }
 
 
         //If amp command send change amp message to SC
-        else if(type == 'ChangeAmplitudeCommand'){
+        else if (type == 'ChangeAmplitudeCommand') {
             // send message
             var msg = {
                 address: "/slider/amp",
-                args: [
-                    {
+                args: [{
                         type: "f",
                         value: command.amp
                     },
@@ -234,7 +260,7 @@ function executeCommand(serializedCommand) {
                     }
                 ]
             };
-            
+
             // console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
             udpPort.send(msg);
         }
@@ -248,7 +274,7 @@ function executeCommand(serializedCommand) {
 
 
 /// When timer is out this functions creates the automatic sequence
-function automaticSequence(){
+function automaticSequence() {
 
 }
 
@@ -257,31 +283,31 @@ function sleep(milliseconds) {
     const date = Date.now();
     let currentDate = null;
     do {
-      currentDate = Date.now();
+        currentDate = Date.now();
     } while (currentDate - date < milliseconds);
-  }
+}
 
 
 //// COMMUNICATION WITH PYTHON
 
-function sendToPy(){
+function sendToPy() {
     //creates the new likes array every session
 
-var spawn = require('child_process').spawn,
-    py    = spawn('python', ['./python_script/compute.py']),
-    data = likesArray,
-    dataString = '';
+    var spawn = require('child_process').spawn,
+        py = spawn('python', ['./python_script/compute.py']),
+        data = likesArray,
+        dataString = '';
 
     py.stderr.on('data', (data) => {
         console.error(`stderr: ${data}`);
     });
 
-py.stdout.on('data', function(data){
-  dataString += data.toString();
-});
-py.stdout.on('end', function(){
-  console.log('i will perform: ',dataString);
-});
+    py.stdout.on('data', function(data) {
+        dataString += data.toString();
+    });
+    py.stdout.on('end', function() {
+        console.log('i will perform: ', dataString);
+    });
 
 
     py.stdin.write(JSON.stringify(data));
@@ -291,8 +317,8 @@ py.stdout.on('end', function(){
 }
 
 // recursive function, it's asking python every tot ms
-function askPython(){
-    setTimeout(sendToPy, 10000); // ms of the repetition 
+function askPython() {
+    setTimeout(sendToPy, 10000); // ms of the repetition
 }
 
 askPython()
