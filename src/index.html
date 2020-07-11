@@ -241,7 +241,7 @@
             <div class="TimerText"> <text></text></div>
             <time id="countdown"></time>
         </div>
-        <script src="https://192.168.1.222:3001/socket.io/socket.io.js"></script>
+        <script src="https://192.168.0.108:3001/socket.io/socket.io.js"></script>
 
         <div id="counter"></div>
         <script>
@@ -253,7 +253,7 @@
             let count = 40000;
             let t = 0;
             let countdownTimer;
-            var socket = io.connect('https://192.168.1.92:3001');
+            var socket = io.connect('https://192.168.0.108:3001');
 
             socket.on('Ispector', control => {
                 // console.log(control);

@@ -18,7 +18,7 @@ var time = 60;
 var reset = false;
 
 // Parameters for automatic evolution
-var statusTable;
+var statusTable = [];
 var numberOfRepresentedFigures;
 
 ////////////////////////////////////////
@@ -334,6 +334,7 @@ function sendToPy() {
 
         //Regular expression to extract floating point numbers from the string built in python
         var regex = /[+-]?\d+(\.\d+)?/g;
+        status = new Array(4)
         if(dataString != ''){
             floats = dataString.match(regex).map(function(v) {return parseFloat(v)});
             //Values should be saved in arrays that represent status of the curve and time
@@ -344,6 +345,7 @@ function sendToPy() {
                 }
                 //save status in table
                 statusTable[i] = status;
+                console.log(statusTable)
             }
             numberOfRepresentedFigures = floats.length / 10;
         }
