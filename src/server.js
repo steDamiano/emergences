@@ -295,7 +295,8 @@ function automaticSequence() {
         io.send(commandSerializer.serializedCommand(new ChangePhaseCommand(lissajousCurve, statusTable[i][5], 1)));
         io.send(commandSerializer.serializedCommand(new ChangePhaseCommand(lissajousCurve, statusTable[i][8], 2)));
 
-        sleep(statusTable[i][9]);
+        //Wait for specified time, * 1000 is to convert value in milliseconds
+        sleep(statusTable[i][9] * 1000);
     }
 
 }
