@@ -18,7 +18,6 @@ var time = 60;
 var reset = false;
 
 // Parameters for automatic evolution
-var statusTable = [];
 var numberOfRepresentedFigures;
 
 ////////////////////////////////////////
@@ -175,7 +174,7 @@ io.on('connection', (socket) => {
 
         var status = [xAxis, yAxis, zAxis];
         // EDIT WITH STATUS ARRAY
-        likesArray.push([lissajousCurve.fx, lissajousCurve.fy, lissajousCurve.fz])
+        likesArray.push(status)
         console.log(status);
     });
 
@@ -331,7 +330,7 @@ function sendToPy() {
     });
     py.stdout.on('end', function() {
         console.log('i will perform: ', dataString);
-
+        
         //Regular expression to extract floating point numbers from the string built in python
         var regex = /[+-]?\d+(\.\d+)?/g;
         status = new Array(10)
@@ -363,7 +362,7 @@ function sendToPy() {
 
 // recursive function, it's asking python every tot ms
 function askPython() {
-    setTimeout(sendToPy, 10000); // ms of the repetition
+    setTimeout(sendToPy, 5000); // ms of the repetition
 }
 
 askPython()
