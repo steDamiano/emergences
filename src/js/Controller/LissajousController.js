@@ -13,7 +13,7 @@ export default class LissajousController {
         // Do we need it?
         this.lissajousRemoteMediator.initialize();
     }
-    c
+    
     onFreqChange(freq) {
         var frequency = freq / 10; // ******//
         console.log(frequency);

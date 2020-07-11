@@ -204,13 +204,13 @@ export default class MainView {
     onDampChange() {
         var val = this.dampInput.value;
         // console.log("change amp, value: " + val);
-        this.controller.onDampChange(val);
+        this.controller.onDampChange(val) * 1;
         this.animate(this.LissajousViewMediator.positions);
     }
 
     onPhaseChange() {
         var val = this.phaseInput.value;
-        this.controller.onPhaseChange(val);
+        this.controller.onPhaseChange(val * 1);
         this.animate(this.LissajousViewMediator.positions);
     }
 

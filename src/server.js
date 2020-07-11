@@ -17,6 +17,10 @@ var noClientsFlag = true;
 var time = 60;
 var reset = false;
 
+// Parameters for automatic evolution
+var statusTable;
+var numberOfRepresentedFigures;
+
 ////////////////////////////////////////
 function secondPassed() {
 
@@ -61,6 +65,8 @@ app.get('/', (req, res) => {
 // Osc communication
 var osc = require("osc");
 const ChangeFrequencyCommand = require('./js/Command/ChangeFrequencyCommand');
+const ChangeAmplitudeCommand = require('./js/Command/ChangeAmplitudeCommand');
+const ChangePhaseCommand = require('./js/Command/ChangePhaseCommand');
 var udpPort = new osc.UDPPort({
     // This is the port we're listening on.
     localAddress: "127.0.0.1",
@@ -275,6 +281,22 @@ function executeCommand(serializedCommand) {
 
 /// When timer is out this functions creates the automatic sequence
 function automaticSequence() {
+    for(i = 0; i < numberOfRepresentedFigures; i++){
+        //Frequency changes
+        io.send(commandSerializer.serialize(new ChangeFrequencyCommand(lissajousCurve, statusTable[i][0], 0)));
+        io.send(commandSerializer.serializedCommand(new ChangeFrequencyCommand(lissajousCurve, statusTable[i][3], 1)));
+        io.send(commandSerializer.serializedCommand(new ChangeFrequencyCommand(lissajousCurve, statusTable[i][6], 2)));
+        //Amplitude changes
+        io.send(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, statusTable[i][1], 0)));
+        io.send(commandSerializer.serializedCommand(new ChangeAmplitudeCommand(lissajousCurve, statusTable[i][4], 1)));
+        io.send(commandSerializer.serializedCommand(new ChangeAmplitudeCommand(lissajousCurve, statusTable[i][7], 2)));
+        //Phase Changes
+        io.send(commandSerializer.serialize(new ChangePhaseCommand(lissajousCurve, statusTable[i][2], 0)));
+        io.send(commandSerializer.serializedCommand(new ChangePhaseCommand(lissajousCurve, statusTable[i][5], 1)));
+        io.send(commandSerializer.serializedCommand(new ChangePhaseCommand(lissajousCurve, statusTable[i][8], 2)));
+
+        sleep(statusTable[i][9]);
+    }
 
 }
 
@@ -307,6 +329,22 @@ function sendToPy() {
     });
     py.stdout.on('end', function() {
         console.log('i will perform: ', dataString);
+
+        //Regular expression to extract floating point numbers from the string built in python
+        var regex = /[+-]?\d+(\.\d+)?/g;
+        if(dataString != ''){
+            floats = dataString.match(regex).map(function(v) {return parseFloat(v)});
+            //Values should be saved in arrays that represent status of the curve and time
+            for(i = 0; i < floats.length / 10; i++){
+                //Collect 10 values at a time that form a status + relative representation tima
+                for(j = 0; j < 10; j++){
+                    status[j] = floats[10*i + j];
+                }
+                //save status in table
+                statusTable[i] = status;
+            }
+            numberOfRepresentedFigures = floats.length / 10;
+        }
     });
 
 
