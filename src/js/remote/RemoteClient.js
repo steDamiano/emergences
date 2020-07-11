@@ -39,6 +39,27 @@ export default class RemoteClient extends Observable{
         this.socket.on('connect', (event) =>{
             this.emit('Connected', event);
         });
+
+        ///ADDD
+        
+        this.socket.on('Ispector', control => {
+            if (control.position <= 2) {
+                document.getElementById("myDetails").style.opacity = "1";
+            } else if (control.position > 2) {
+                document.getElementById("myDetails").style.opacity = "0";
+            }
+
+        });
+
+        this.socket.on('Time', obj => {
+            if (obj) {
+                const millis = Math.floor((Date.now() - obj.ServerTime));
+                this.timer(obj.time, obj.reset);
+            }
+        });
+
+
+        
     }
 
     sendLike(){
@@ -58,4 +79,56 @@ export default class RemoteClient extends Observable{
         const payload = {type, command: serializedCommand};
         this.socket.send(JSON.stringify(payload));
     }
+
+    timer(obj, r) {
+        clearInterval(countdownTimer);
+        var seconds = obj;
+        var reset = r;
+        const State = document.querySelector(".TimerText text");
+        console.log("state: ", State);
+        //State.innerHTML = "Next Generation";
+        if (reset == false) {
+            State.innerHTML = "Next Generation in:";
+            reset = true;
+            document.getElementById('myDetails').removeEventListener('click', handleTouch);
+        } else {
+            State.innerHTML = "On Air";
+            reset = false;
+            document.getElementById('myDetails').addEventListener('click', handleTouch);
+        }
+
+        function secondPassed() {
+            var minutes = Math.round((seconds - 30) / 60),
+                remainingSeconds = seconds % 60;
+            if (remainingSeconds < 10) {
+                remainingSeconds = "0" + remainingSeconds;
+            }
+            document.getElementById('countdown').innerHTML = minutes + ":" + remainingSeconds;
+            if (seconds == 0 && reset == false) { ///CONTROLS ON
+                // console.log("CONTROLS ON");
+                seconds = 60;
+                reset = !reset;
+                document.getElementById("myDetails").open = true;
+                document.getElementById('myDetails').removeEventListener('click', handleTouch);
+                State.innerHTML = "Next Generation in:";
+            } else if (seconds == 0 && reset == true) { ///CONTROLS OFF
+                // console.log("CONTROLS OFF");
+                seconds = 30;
+                reset = !reset;
+                document.getElementById("myDetails").open = false;
+                document.getElementById('myDetails').addEventListener('click', handleTouch);
+                State.innerHTML = "On Air";
+            } else {
+                seconds--;
+            }
+        }
+
+        function handleTouch(e) {
+            e.preventDefault();
+        }
+        countdownTimer = setInterval(secondPassed, 1000);
+
+
+    }
+    
 }

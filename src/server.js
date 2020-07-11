@@ -18,7 +18,7 @@ var time = 60;
 var reset = false;
 
 // Parameters for automatic evolution
-var statusTable = [];
+var statusTable;
 var numberOfRepresentedFigures;
 
 ////////////////////////////////////////
@@ -94,9 +94,9 @@ io.on('connection', (socket) => {
     for (i = 0; i < clients_connected.length; i++) {
         if (clients_connected[i] == socket.handshake.address) {
             alreadyConnected = true;
-            break
         }
     }
+
     if (!alreadyConnected) {
         var inserted = false;
         connectedCounter++;
@@ -127,7 +127,7 @@ io.on('connection', (socket) => {
         address: socket.handshake.address
     });
 
-    socket.broadcast.emit("Time", {
+    socket.emit('Time', {
         time: time,
         reset: reset
     });
@@ -287,11 +287,11 @@ function automaticSequence() {
         io.send(JSON.stringify(commandSerializer.serializedCommand(new ChangeFrequencyCommand(lissajousCurve, statusTable[i][3], 1))));
         io.send(JSON.stringify(commandSerializer.serialize(new ChangeFrequencyCommand(lissajousCurve, statusTable[i][0], 0))));
         io.send(JSON.stringify(commandSerializer.serializedCommand(new ChangeFrequencyCommand(lissajousCurve, statusTable[i][6], 2))));
-        //AmplitJSON.stringify(ude changes
+        //Amplitude changes
         io.send(JSON.stringify(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, statusTable[i][1], 0))));
         io.send(JSON.stringify(commandSerializer.serializedCommand(new ChangeAmplitudeCommand(lissajousCurve, statusTable[i][4], 1))));
         io.send(JSON.stringify(commandSerializer.serializedCommand(new ChangeAmplitudeCommand(lissajousCurve, statusTable[i][7], 2))));
-        //Phase JSON.stringify(Changes
+        //Phase Changes
         io.send(JSON.stringify(commandSerializer.serialize(new ChangePhaseCommand(lissajousCurve, statusTable[i][2], 0))));
         io.send(JSON.stringify(commandSerializer.serializedCommand(new ChangePhaseCommand(lissajousCurve, statusTable[i][5], 1))));
         io.send(JSON.stringify(commandSerializer.serializedCommand(new ChangePhaseCommand(lissajousCurve, statusTable[i][8], 2))));
