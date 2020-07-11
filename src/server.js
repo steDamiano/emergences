@@ -67,6 +67,7 @@ var osc = require("osc");
 const ChangeFrequencyCommand = require('./js/Command/ChangeFrequencyCommand');
 const ChangeAmplitudeCommand = require('./js/Command/ChangeAmplitudeCommand');
 const ChangePhaseCommand = require('./js/Command/ChangePhaseCommand');
+const { serialize } = require('v8');
 var udpPort = new osc.UDPPort({
     // This is the port we're listening on.
     localAddress: "127.0.0.1",
@@ -283,17 +284,17 @@ function executeCommand(serializedCommand) {
 function automaticSequence() {
     for(i = 0; i < numberOfRepresentedFigures; i++){
         //Frequency changes
-        io.send(commandSerializer.serialize(new ChangeFrequencyCommand(lissajousCurve, statusTable[i][0], 0)));
-        io.send(commandSerializer.serializedCommand(new ChangeFrequencyCommand(lissajousCurve, statusTable[i][3], 1)));
-        io.send(commandSerializer.serializedCommand(new ChangeFrequencyCommand(lissajousCurve, statusTable[i][6], 2)));
-        //Amplitude changes
-        io.send(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, statusTable[i][1], 0)));
-        io.send(commandSerializer.serializedCommand(new ChangeAmplitudeCommand(lissajousCurve, statusTable[i][4], 1)));
-        io.send(commandSerializer.serializedCommand(new ChangeAmplitudeCommand(lissajousCurve, statusTable[i][7], 2)));
-        //Phase Changes
-        io.send(commandSerializer.serialize(new ChangePhaseCommand(lissajousCurve, statusTable[i][2], 0)));
-        io.send(commandSerializer.serializedCommand(new ChangePhaseCommand(lissajousCurve, statusTable[i][5], 1)));
-        io.send(commandSerializer.serializedCommand(new ChangePhaseCommand(lissajousCurve, statusTable[i][8], 2)));
+        io.send(JSON.stringify(commandSerializer.serializedCommand(new ChangeFrequencyCommand(lissajousCurve, statusTable[i][3], 1))));
+        io.send(JSON.stringify(commandSerializer.serialize(new ChangeFrequencyCommand(lissajousCurve, statusTable[i][0], 0))));
+        io.send(JSON.stringify(commandSerializer.serializedCommand(new ChangeFrequencyCommand(lissajousCurve, statusTable[i][6], 2))));
+        //AmplitJSON.stringify(ude changes
+        io.send(JSON.stringify(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, statusTable[i][1], 0))));
+        io.send(JSON.stringify(commandSerializer.serializedCommand(new ChangeAmplitudeCommand(lissajousCurve, statusTable[i][4], 1))));
+        io.send(JSON.stringify(commandSerializer.serializedCommand(new ChangeAmplitudeCommand(lissajousCurve, statusTable[i][7], 2))));
+        //Phase JSON.stringify(Changes
+        io.send(JSON.stringify(commandSerializer.serialize(new ChangePhaseCommand(lissajousCurve, statusTable[i][2], 0))));
+        io.send(JSON.stringify(commandSerializer.serializedCommand(new ChangePhaseCommand(lissajousCurve, statusTable[i][5], 1))));
+        io.send(JSON.stringify(commandSerializer.serializedCommand(new ChangePhaseCommand(lissajousCurve, statusTable[i][8], 2))));
 
         //Wait for specified time, * 1000 is to convert value in milliseconds
         sleep(statusTable[i][9] * 1000);
