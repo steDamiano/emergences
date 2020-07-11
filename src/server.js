@@ -334,19 +334,22 @@ function sendToPy() {
 
         //Regular expression to extract floating point numbers from the string built in python
         var regex = /[+-]?\d+(\.\d+)?/g;
-        status = new Array(4)
+        status = new Array(10)
         if(dataString != ''){
+            var statusTable = []
             floats = dataString.match(regex).map(function(v) {return parseFloat(v)});
             //Values should be saved in arrays that represent status of the curve and time
             for(i = 0; i < floats.length / 10; i++){
+                var status = []
                 //Collect 10 values at a time that form a status + relative representation tima
                 for(j = 0; j < 10; j++){
                     status[j] = floats[10*i + j];
                 }
                 //save status in table
-                statusTable[i] = status;
-                console.log(statusTable)
+                statusTable.push(status)
             }
+            
+            console.log(statusTable)
             numberOfRepresentedFigures = floats.length / 10;
         }
     });
