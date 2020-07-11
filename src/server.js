@@ -39,6 +39,7 @@ app.get('/', (req, res) => {
 ///OSC Connection
 // Osc communication
 var osc = require("osc");
+const ChangeFrequencyCommand = require('./js/Command/ChangeFrequencyCommand');
 var udpPort = new osc.UDPPort({
     // This is the port we're listening on.
     localAddress: "127.0.0.1",
@@ -110,7 +111,6 @@ io.on('connection', (socket) => {
     
     console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
     udpPort.send(msg);
-
 
     var terminationCommand = null;
 
@@ -246,6 +246,20 @@ function executeCommand(serializedCommand) {
     }
 }
 
+
+/// When timer is out this functions creates the automatic sequence
+function automaticSequence(){
+
+}
+
+/// Help function to set the automatic evolution of the curve
+function sleep(milliseconds) {
+    const date = Date.now();
+    let currentDate = null;
+    do {
+      currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
+  }
 
 
 //// COMMUNICATION WITH PYTHON

@@ -17,6 +17,8 @@ export default class RemoteClient extends Observable{
         this.socket = io.connect(this.uri);
 
         this.socket.on('message', (data) =>{
+            console.log("Command received");
+            console.log(data);
             const serializedCommand = JSON.parse(data);
             const command = this.commandSerializer.deserialize(serializedCommand);
 
