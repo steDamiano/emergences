@@ -34,13 +34,14 @@ export default class RemoteClient extends Observable{
             this.address = data.address;
 
             this.emit('InitStatus', data.lissajous);
+
+            //Send frequency value, randomly generated from HTML, to server
+            this.socket.emit('InitialFreq', document.getElementById('freq').value);
         });
 
         this.socket.on('connect', (event) =>{
             this.emit('Connected', event);
         });
-
-        ///ADDD
         
         this.socket.on('Ispector', control => {
             if (control.position <= 2) {
@@ -127,8 +128,6 @@ export default class RemoteClient extends Observable{
             e.preventDefault();
         }
         countdownTimer = setInterval(secondPassed, 1000);
-
-
     }
     
 }

@@ -13,6 +13,8 @@ pop_size = 10
 
 tot_sec_gen = 0
 
+np.set_printoptions(suppress = True)
+
 # Read data from stdin
 def read_in():
     lines = sys.stdin.readlines()

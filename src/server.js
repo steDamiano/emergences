@@ -120,33 +120,52 @@ io.on('connection', (socket) => {
         address: socket.handshake.address,
         lissajous: lissajousCurve,
     });
+
+    // Get initial frequency of client, and send it to supercollider synth
+    socket.on('InitialFreq', function getFreq(freq){
+        // console.log("I am server, I receive freq: ", freq);
+
+        if(pos < 3){
+            // console.log("I send this freq: ", initialFrequency);
+
+            var msg = {
+            address: "/button/1",
+            args: [{
+                    type: "f",
+                    value: 1
+                },
+                {
+                    type: "i",
+                    value: pos
+                },
+                {
+                    type: "i",
+                    value: freq
+                }
+                ]
+            };
+
+            console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
+            udpPort.send(msg);    
+
+        }
+
+    });
+
     /////////////////
     io.to(socket.id).emit('Ispector', {
         position: pos,
         address: socket.handshake.address
     });
 
-    socket.emit('Time', {
+    io.emit('Time', {
         time: time,
         reset: reset
     });
     ///////////////////
     // start superCollider oscillator controlled by client ID
-    var msg = {
-        address: "/button/1",
-        args: [{
-                type: "f",
-                value: 1
-            },
-            {
-                type: "i",
-                value: pos
-            }
-        ]
-    };
+    
 
-    console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
-    udpPort.send(msg);
 
     var terminationCommand = null;
 
@@ -194,7 +213,7 @@ io.on('connection', (socket) => {
         }
 
         // stop superCollider oscillator associated to client ID
-        if (pos != null) {
+        if (pos != null && pos < 3) {
             // Osc stop
             var msg = {
                 address: "/button/2",

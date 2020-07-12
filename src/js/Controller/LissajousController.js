@@ -15,8 +15,9 @@ export default class LissajousController {
     }
     
     onFreqChange(freq) {
-        var frequency = freq / 10; // ******//
-        console.log(frequency);
+        // console.log("Frequency I am changing is: ", freq);
+        var frequency = freq * 1;
+        // console.log(frequency);
         // console.log('id: ' + this.lissajousRemoteMediator.remoteClient.id);
         this.executeCommand(new ChangeFrequencyCommand(this.lissajousCurve, frequency, this.lissajousRemoteMediator.remoteClient.id));
     }

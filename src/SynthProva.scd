@@ -49,7 +49,7 @@ OSCdef(\start,
     {
 		arg msg;
 		if((msg[1] > 0), {
-			x = Synth.new(\adolfo, [\freq, 200, \amp, 1]);
+			x = Synth.new(\adolfo, [\freq, msg[3]*100, \amp, 1]);
 
 
 			//freq = msg[1];
