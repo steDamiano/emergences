@@ -99,9 +99,6 @@ def main():
         # creates the probability density function
         first_gen = sp.stats.rv_discrete(name='first_gen', values=(fit_index, fit_prob))
 
-        # example: samples 1 elements from the distribution
-        gparent = first_gen.rvs(size=1)
-
         # sets the population back to frequencies/1000
         for element in population[0]:
             element[0] = (10**element[0])/1000
