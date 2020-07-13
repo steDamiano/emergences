@@ -14,7 +14,7 @@ var noClientsFlag = true;
 // server.listen(8081, '0.0.0.0', () =>{
 //     console.log("Server listening on port 8081");
 // });
-var time = 15;
+var time = 120;
 var reset = false;
 var state = 0;
 
@@ -325,6 +325,24 @@ function executeCommand(serializedCommand) {
             udpPort.send(msg);
         }
 
+        else if (type == 'ChangePhaseCommand'){
+            var msg = {
+                address: "/slider/phase",
+                args: [{
+                        type: "i",
+                        value: command.phase
+                    },
+                    {
+                        type: "i",
+                        value: command.id
+                    }
+                ]
+            };
+    
+            // console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
+            udpPort.send(msg);
+        }
+
         //execute command on server curve
         command.execute();
     } else {
@@ -432,7 +450,11 @@ function sendToPy() {
 
     py.stdin.write(JSON.stringify(data));
     py.stdin.end();
+<<<<<<< HEAD
     //askPython();
+=======
+    askPython();
+>>>>>>> 6b80256d157539b9f8e71c7e735fcf0de93b381b
     likesArray = [];
 }
 
@@ -441,4 +463,8 @@ function askPython() {
     setTimeout(sendToPy, 5000); // ms of the repetition
 }
 
+<<<<<<< HEAD
  //askPython()
+=======
+askPython()
+>>>>>>> 6b80256d157539b9f8e71c7e735fcf0de93b381b

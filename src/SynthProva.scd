@@ -32,6 +32,12 @@ o = OSCFunc({
 	[msg, time, addr, recvPort].postln;
 }, '/slider/amp', n);
 )
+(
+o = OSCFunc({
+	arg msg, time, addr, recvPort;
+	[msg, time, addr, recvPort].postln;
+}, '/slider/phase', n);
+)
 
 (
 SynthDef.new(\adolfo,
@@ -91,6 +97,15 @@ OSCdef(\changeAmp,
 		arg msg;
 		~notes[msg[2]].set(\amp, msg[1]*10);
 }, 'slider/amp')
+)
+
+(
+OSCdef(\changePhase,
+	{
+		// Here set the phase parameters, msg[1] is parameter to set, msg[2] is ID
+		arg msg;
+		~notes[msg[2]].set(\phaseSet, msg[1]);
+}, 'slider/phase')
 )
 
 //MIDI TEST
