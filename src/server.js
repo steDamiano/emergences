@@ -14,7 +14,7 @@ var noClientsFlag = true;
 // server.listen(8081, '0.0.0.0', () =>{
 //     console.log("Server listening on port 8081");
 // });
-var time = 120;
+var time = 15;
 var reset = false;
 var state = 0;
 
@@ -403,7 +403,7 @@ function sendToPy() {
         dataString += data.toString();
     });
     py.stdout.on('end', function() {
-        // console.log('i will perform: ', dataString);
+        console.log('i will perform: ', dataString);
 
         //Regular expression to extract floating point numbers from the string built in python
         var regex = /[+-]?\d+(\.\d+)?/g;
@@ -422,10 +422,10 @@ function sendToPy() {
                 statusTable.push(status)
             }
 
-            // console.log(statusTable)
+            console.log("Status table: ", statusTable)
             numberOfRepresentedFigures = floats.length / 10;
-            console.log("Data received from python, starting sequence. I will draw: ", numberOfRepresentedFigures);
-            automaticSequence();
+            // console.log("Data received from python, starting sequence. I will draw: ", numberOfRepresentedFigures);
+            // automaticSequence();
         }
     });
 
