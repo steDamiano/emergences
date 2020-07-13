@@ -92,12 +92,13 @@ export default class RemoteClient extends Observable {
             switch (state) {
                 case 0:
                     State.innerHTML = "Next Show in:";
-                    document.getElementById('myDetails').removeEventListener('click', handleTouch);
+                    // document.getElementById('myDetails').removeEventListener('click', handleTouch);
+                    document.getElementById("myDetails").style.pointerEvents = 'auto';
                     break;
                 case 1:
                     State.innerHTML = "1st Generation";
-                    document.getElementById('myDetails').addEventListener('click', handleTouch);
-
+                    // document.getElementById('myDetails').addEventListener('click', handleTouch);
+                    document.getElementById("myDetails").style.pointerEvents = 'none';
                     break;
                 case 2:
                     State.innerHTML = "2nd Generation";
@@ -120,17 +121,21 @@ export default class RemoteClient extends Observable {
             if (seconds == 0 && reset == true) { ///CONTROLS ON
                 // console.log("CONTROLS ON");
                 document.getElementById("myDetails").open = true;
-                document.getElementById('myDetails').removeEventListener('click', handleTouch);
+                // document.getElementById('myDetails').removeEventListener('click', handleTouch);
+                document.getElementById("myDetails").style.pointerEvents = 'auto';
+
                 State.innerHTML = "Next Generation in:";
             } else if (seconds == 0 && reset == false) { ///CONTROLS OFF
-                console.log("CONTROLS OFF");
+                // console.log("CONTROLS OFF");
                 document.getElementById("myDetails").open = false;
-                document.getElementById('myDetails').addEventListener('click', handleTouch);
+                // document.getElementById('myDetails').addEventListener('click', handleTouch);
+                document.getElementById("myDetails").style.pointerEvents = 'none';
+
 
             }
 
             function handleTouch(e) {
-                e.preventDefault();
+                // e.preventDefault();
             }
         }
         //////////////////////////!!!!!!!/////////////
