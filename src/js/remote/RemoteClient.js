@@ -96,22 +96,33 @@ export default class RemoteClient extends Observable {
                     document.getElementById("myDetails").style.pointerEvents = 'none';
                     document.getElementById("myDetails").children[0].innerHTML = "Locked ";
 
+                    document.getElementById("myDetails").open = false;
+
                     break;
                 case 2:
                     State.innerHTML = "2nd Generation";
                     document.getElementById("myDetails").style.pointerEvents = 'none';
                     document.getElementById("myDetails").children[0].innerHTML = "Locked ";
+
+                    document.getElementById("myDetails").open = false;
+
                     break;
                 case 3:
                     State.innerHTML = "3rd Generation";
                     document.getElementById("myDetails").style.pointerEvents = 'none';
                     document.getElementById("myDetails").children[0].innerHTML = "Locked ";
+
+                    document.getElementById("myDetails").open = false;
+
                     break;
 
                 case 4:
                     State.innerHTML = "4th Generation";
                     document.getElementById("myDetails").style.pointerEvents = 'none';
                     document.getElementById("myDetails").children[0].innerHTML = "Locked ";
+
+                    document.getElementById("myDetails").open = false;
+
                     break;
             }
 

@@ -14,7 +14,7 @@ var noClientsFlag = true;
 // server.listen(8081, '0.0.0.0', () =>{
 //     console.log("Server listening on port 8081");
 // });
-var time = 15;
+var time = 120;
 var reset = false;
 var state = 0;
 
@@ -432,7 +432,7 @@ function sendToPy() {
 
     py.stdin.write(JSON.stringify(data));
     py.stdin.end();
-    // askPython();
+    askPython();
     likesArray = [];
 }
 
@@ -441,4 +441,4 @@ function askPython() {
     setTimeout(sendToPy, 5000); // ms of the repetition
 }
 
-// askPython()
+askPython()
