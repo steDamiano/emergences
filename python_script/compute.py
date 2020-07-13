@@ -136,7 +136,8 @@ def main():
                     we_survived.append(survival)
                     # reset frequency to normal scale (linear, f/100)
                     for element in survival:
-                        print((10**element[0])/100, element[1], element[2])
+                        # frequency from logarithm and then /100, amplitude with limiter, phase as it is
+                        print((10**element[0])/100, min(element[1], 0.1), element[2])
                     print(time)
                     return
                 elif tot_sec_gen > 30:
@@ -144,7 +145,8 @@ def main():
                     survival = pop[int(fitness[distribution.rvs(size=1)][0][0])]
                     we_survived.append(survival)
                     for element in survival:
-                        print((10**element[0])/100, element[1], element[2])
+                        # frequency from logarithm and then /100, amplitude with limiter, phase as it is
+                        print((10**element[0])/100, min(element[1], 0.1), element[2])
                     print(time)
                     # actual performance
                     tot_sec_gen = 0
@@ -154,7 +156,8 @@ def main():
                     we_survived.append(survival)
                     # actual performance
                     for element in survival:
-                        print((10**element[0])/100, element[1], element[2])
+                        # frequency from logarithm and then /100, amplitude with limiter, phase as it is
+                        print((10**element[0])/100, min(element[1], 0.1), element[2])
                     print(time)
                     we_survived.append(survival)
                     iterate()
@@ -196,7 +199,7 @@ def main():
                                 # frequency
                                 element[0] = np.random.uniform(1, 4, 1)
                             if index == 1:
-                                element[1] = np.random.uniform(0, 1, 1)
+                                element[1] = np.random.uniform(0, 0.1, 1)
                             if index == 2:
                                 element[2] = np.random.uniform(0, 100, 1)
             return pop

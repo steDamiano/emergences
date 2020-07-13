@@ -450,11 +450,7 @@ function sendToPy() {
 
     py.stdin.write(JSON.stringify(data));
     py.stdin.end();
-<<<<<<< HEAD
     //askPython();
-=======
-    askPython();
->>>>>>> 6b80256d157539b9f8e71c7e735fcf0de93b381b
     likesArray = [];
 }
 
@@ -463,8 +459,4 @@ function askPython() {
     setTimeout(sendToPy, 5000); // ms of the repetition
 }
 
-<<<<<<< HEAD
  //askPython()
-=======
-askPython()
->>>>>>> 6b80256d157539b9f8e71c7e735fcf0de93b381b
