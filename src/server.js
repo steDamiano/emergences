@@ -424,15 +424,15 @@ function sendToPy() {
 
             console.log("Status table: ", statusTable)
             numberOfRepresentedFigures = floats.length / 10;
-            // console.log("Data received from python, starting sequence. I will draw: ", numberOfRepresentedFigures);
-            // automaticSequence();
+            console.log("Data received from python, starting sequence. I will draw: ", numberOfRepresentedFigures);
+            automaticSequence();
         }
     });
 
 
     py.stdin.write(JSON.stringify(data));
     py.stdin.end();
-    // askPython();
+    //askPython();
     likesArray = [];
 }
 
@@ -441,4 +441,4 @@ function askPython() {
     setTimeout(sendToPy, 5000); // ms of the repetition
 }
 
-// askPython()
+ //askPython()

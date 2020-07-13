@@ -45,11 +45,9 @@ def main():
     np_lines = np.array(lines)
     if np_lines.size != 0:
         for element in np_lines[0]:
-            element[0] = math.log10(element[0] * 1000)
-
+            element[0] = math.log10(element[0] * 100)
+            
         likeX = np_lines
-        shp,_,_ = np.shape(likeX)
-
         population = []
 
         # population
@@ -60,8 +58,9 @@ def main():
         for citizen in population:
             for dna in citizen:
                 #rescaling the frequency range of the population -- it's the logarithm already! 10^1 < f < 10^4
-                dna[0] = np.random.uniform(1, np.log10(5000), 1)
+                dna[0] = np.random.uniform(np.log10(20), np.log10(5000), 1)
                 # amplitude range stays the same
+                dna[1] = np.random.uniform(0, 0.1, 1)
                 # phase/offset range
                 dna[2] = dna[2] * 100
 
@@ -135,10 +134,9 @@ def main():
                     tot_sec_gen = 0
                     survival = pop[int(fitness[distribution.rvs(size=1)][0][0])]
                     we_survived.append(survival)
+                    # reset frequency to normal scale (linear, f/100)
                     for element in survival:
-                        print(element.tolist())
-                        # reset frequency to normal scale (linear, f/1000)
-                        element[0] = (10**(element[0]))/1000
+                        print((10**element[0])/100, element[1], element[2])
                     print(time)
                     return
                 elif tot_sec_gen > 30:
@@ -146,9 +144,7 @@ def main():
                     survival = pop[int(fitness[distribution.rvs(size=1)][0][0])]
                     we_survived.append(survival)
                     for element in survival:
-                        print(element.tolist())
-                        # reset frequency to normal scale (linear, f/1000)
-                        element[0] = (10 ** (element[0])) / 1000
+                        print((10**element[0])/100, element[1], element[2])
                     print(time)
                     # actual performance
                     tot_sec_gen = 0
@@ -158,9 +154,7 @@ def main():
                     we_survived.append(survival)
                     # actual performance
                     for element in survival:
-                        print(element.tolist())
-                        # reset frequency to normal scale (linear, f/1000)
-                        element[0] = (10 ** (element[0])) / 1000
+                        print((10**element[0])/100, element[1], element[2])
                     print(time)
                     we_survived.append(survival)
                     iterate()
