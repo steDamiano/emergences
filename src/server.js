@@ -325,6 +325,24 @@ function executeCommand(serializedCommand) {
             udpPort.send(msg);
         }
 
+        else if (type == 'ChangePhaseCommand'){
+            var msg = {
+                address: "/slider/phase",
+                args: [{
+                        type: "i",
+                        value: command.phase
+                    },
+                    {
+                        type: "i",
+                        value: command.id
+                    }
+                ]
+            };
+    
+            // console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
+            udpPort.send(msg);
+        }
+
         //execute command on server curve
         command.execute();
     } else {
