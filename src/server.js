@@ -14,8 +14,9 @@ var noClientsFlag = true;
 // server.listen(8081, '0.0.0.0', () =>{
 //     console.log("Server listening on port 8081");
 // });
-var time = 60;
+var time = 120;
 var reset = false;
+var state = 0;
 
 // Parameters for automatic evolution
 var numberOfRepresentedFigures;
@@ -23,19 +24,51 @@ var numberOfRepresentedFigures;
 ////////////////////////////////////////
 function secondPassed() {
 
-
-    if (time == 0 && reset == false) { //CONTROLS ON
-        time = 60;
+    if (time == 0 && reset == false) {
+        //CONTROLS OFF
+        time = 120;
         reset = !reset;
-    } else if (time == 0 && reset == true) { //CONTROLS OFF
-        time = 30;
+        state = 1;
+        shoot()
+    } else if (time == 0 && reset == true) {
+        //CONTROLS ON
+        time = 180;
         reset = !reset;
+        state = 0;
+        automaticSequence();
+        shoot()
     } else {
         time--;
+        if (reset == true) {
+            switch (time) {
+                case 120:
+                    state = 1;
+                    break;
+                case 90:
+                    state = 2;
+                    break;
+                case 60:
+                    state = 3;
+                    break;
+                case 30:
+                    state = 4;
+                    break;
+            }
+        } else {
+            state = 0;
+        }
+        shoot()
     }
 }
 setInterval(secondPassed, 1000);
 
+function shoot() {
+    io.emit('Time', {
+        time: time,
+        reset: reset,
+        state: state
+    });
+}
 //////////////////////////////////////
 //HTTPS
 const fs = require('fs');
@@ -122,31 +155,31 @@ io.on('connection', (socket) => {
     });
 
     // Get initial frequency of client, and send it to supercollider synth
-    socket.on('InitialFreq', function getFreq(freq){
+    socket.on('InitialFreq', function getFreq(freq) {
         // console.log("I am server, I receive freq: ", freq);
 
-        if(pos < 3){
+        if (pos < 3) {
             // console.log("I send this freq: ", initialFrequency);
 
             var msg = {
-            address: "/button/1",
-            args: [{
-                    type: "f",
-                    value: 1
-                },
-                {
-                    type: "i",
-                    value: pos
-                },
-                {
-                    type: "i",
-                    value: freq
-                }
+                address: "/button/1",
+                args: [{
+                        type: "f",
+                        value: 1
+                    },
+                    {
+                        type: "i",
+                        value: pos
+                    },
+                    {
+                        type: "i",
+                        value: freq
+                    }
                 ]
             };
 
             console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
-            udpPort.send(msg);    
+            udpPort.send(msg);
 
         }
 
@@ -158,13 +191,10 @@ io.on('connection', (socket) => {
         address: socket.handshake.address
     });
 
-    io.emit('Time', {
-        time: time,
-        reset: reset
-    });
+
     ///////////////////
     // start superCollider oscillator controlled by client ID
-    
+
 
 
     var terminationCommand = null;
@@ -300,7 +330,7 @@ function executeCommand(serializedCommand) {
 
 /// When timer is out this functions creates the automatic sequence
 function automaticSequence() {
-    for(i = 0; i < numberOfRepresentedFigures; i++){
+    for (i = 0; i < numberOfRepresentedFigures; i++) {
         //Frequency changes
         io.send(JSON.stringify(commandSerializer.serializedCommand(new ChangeFrequencyCommand(lissajousCurve, statusTable[i][3], 1))));
         io.send(JSON.stringify(commandSerializer.serialize(new ChangeFrequencyCommand(lissajousCurve, statusTable[i][0], 0))));
@@ -349,24 +379,24 @@ function sendToPy() {
     });
     py.stdout.on('end', function() {
         console.log('i will perform: ', dataString);
-        
+
         //Regular expression to extract floating point numbers from the string built in python
         var regex = /[+-]?\d+(\.\d+)?/g;
         status = new Array(10)
-        if(dataString != ''){
+        if (dataString != '') {
             var statusTable = []
-            floats = dataString.match(regex).map(function(v) {return parseFloat(v)});
+            floats = dataString.match(regex).map(function(v) { return parseFloat(v) });
             //Values should be saved in arrays that represent status of the curve and time
-            for(i = 0; i < floats.length / 10; i++){
+            for (i = 0; i < floats.length / 10; i++) {
                 var status = []
-                //Collect 10 values at a time that form a status + relative representation tima
-                for(j = 0; j < 10; j++){
-                    status[j] = floats[10*i + j];
+                    //Collect 10 values at a time that form a status + relative representation tima
+                for (j = 0; j < 10; j++) {
+                    status[j] = floats[10 * i + j];
                 }
                 //save status in table
                 statusTable.push(status)
             }
-            
+
             console.log(statusTable)
             numberOfRepresentedFigures = floats.length / 10;
         }

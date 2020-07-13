@@ -83,24 +83,7 @@ export default class RenderingContext {
                 root: document.body
             }
         }));
-        ////////////////////Handle sessionIn/out/////////////////
-        /* renderer.xr.addEventListener('sessionstart',
-             function(ev) {
-                 console.log('sessionstart', ev);
-                 document.body.style.backgroundColor = 'rgba(0, 0, 0, 0)';
-                 renderer.domElement.style.display = 'none';
-                 if (renderer.xr.getSession().environmentBlendMode != 'opaque') {
-                     room.visible = false;
-                 }
-             });
-         renderer.xr.addEventListener('sessionend',
-             function(ev) {
-                 console.log('sessionend', ev);
-                 document.body.style.backgroundColor = '#FF0000';
-                 renderer.domElement.style.display = '';
-                 room.visible = true;
-             }); */
-        //////////////////////////////
+
         containerElement.appendChild(renderer.domElement);
 
 

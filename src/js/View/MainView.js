@@ -104,6 +104,19 @@ export default class MainView {
         // mesh.visible = true;
         this.renderingContext.scene.add(mesh);
         /////*********************************////////
+        //  this.renderingContext.renderer.xr.addEventListener('sessionstart',
+        //      function(ev) {
+        //          console.log('sessionstart', ev);
+        //          mesh.position.set(0, 0, -0.5);
+        //
+        //      });
+        //  this.renderingContext.renderer.xr.addEventListener('sessionend',
+        //      function(ev) {
+        //          console.log('sessionend', ev);
+        //          mesh.position.set(0, 0, 0);
+        //
+        //      });
+        /////*********************************////////
 
 
         window.addEventListener("resize", (e) => this.onWindowResize(), false);
