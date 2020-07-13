@@ -356,6 +356,11 @@ function automaticSequence() {
         countCalls = -1;
         return;
     }
+
+    if(state == 0){
+        countCalls = -1;
+        return;
+    }
     setTimeout(automaticSequence, statusTable[countCalls][9] * 1000);
 }
 
@@ -409,7 +414,7 @@ function sendToPy() {
 
             // console.log(statusTable)
             numberOfRepresentedFigures = floats.length / 10;
-            console.log("Data received from python, starting sequence");
+            console.log("Data received from python, starting sequence. I will draw: ", numberOfRepresentedFigures);
             automaticSequence();
         }
     });
