@@ -19,7 +19,8 @@ var reset = false;
 var state = 0;
 
 // Parameters for automatic evolution
-var numberOfRepresentedFigures;
+var numberOfRepresentedFigures = 0;
+var statusTable = [];
 
 ////////////////////////////////////////
 function secondPassed() {
@@ -29,13 +30,15 @@ function secondPassed() {
         time = 120;
         reset = !reset;
         state = 1;
+        sendToPy();
+
         shoot()
     } else if (time == 0 && reset == true) {
         //CONTROLS ON
         time = 180;
         reset = !reset;
         state = 0;
-        automaticSequence();
+        // automaticSequence();
         shoot()
     } else {
         time--;
@@ -100,6 +103,7 @@ const ChangeFrequencyCommand = require('./js/Command/ChangeFrequencyCommand');
 const ChangeAmplitudeCommand = require('./js/Command/ChangeAmplitudeCommand');
 const ChangePhaseCommand = require('./js/Command/ChangePhaseCommand');
 const { serialize } = require('v8');
+const { count } = require('console');
 var udpPort = new osc.UDPPort({
     // This is the port we're listening on.
     localAddress: "127.0.0.1",
@@ -327,43 +331,49 @@ function executeCommand(serializedCommand) {
     }
 }
 
-
+// Count how many times the callback has been made, this is the 
+var countCalls = -1;
 /// When timer is out this functions creates the automatic sequence
 function automaticSequence() {
-    for (i = 0; i < numberOfRepresentedFigures; i++) {
-        //Frequency changes
-        io.send(JSON.stringify(commandSerializer.serializedCommand(new ChangeFrequencyCommand(lissajousCurve, statusTable[i][3], 1))));
-        io.send(JSON.stringify(commandSerializer.serialize(new ChangeFrequencyCommand(lissajousCurve, statusTable[i][0], 0))));
-        io.send(JSON.stringify(commandSerializer.serializedCommand(new ChangeFrequencyCommand(lissajousCurve, statusTable[i][6], 2))));
-        //Amplitude changes
-        io.send(JSON.stringify(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, statusTable[i][1], 0))));
-        io.send(JSON.stringify(commandSerializer.serializedCommand(new ChangeAmplitudeCommand(lissajousCurve, statusTable[i][4], 1))));
-        io.send(JSON.stringify(commandSerializer.serializedCommand(new ChangeAmplitudeCommand(lissajousCurve, statusTable[i][7], 2))));
+    countCalls++;
+    if(countCalls < numberOfRepresentedFigures){
+        console.log("Represent figure: ", countCalls);
+
+        io.send(JSON.stringify(commandSerializer.serialize(new ChangeFrequencyCommand(lissajousCurve, statusTable[countCalls][3], 1))));
+        io.send(JSON.stringify(commandSerializer.serialize(new ChangeFrequencyCommand(lissajousCurve, statusTable[countCalls][0], 0))));
+        io.send(JSON.stringify(commandSerializer.serialize(new ChangeFrequencyCommand(lissajousCurve, statusTable[countCalls][6], 2))));
+        // //Amplitude changes
+        io.send(JSON.stringify(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, statusTable[countCalls][1], 0))));
+        io.send(JSON.stringify(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, statusTable[countCalls][4], 1))));
+        io.send(JSON.stringify(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, statusTable[countCalls][7], 2))));
         //Phase Changes
-        io.send(JSON.stringify(commandSerializer.serialize(new ChangePhaseCommand(lissajousCurve, statusTable[i][2], 0))));
-        io.send(JSON.stringify(commandSerializer.serializedCommand(new ChangePhaseCommand(lissajousCurve, statusTable[i][5], 1))));
-        io.send(JSON.stringify(commandSerializer.serializedCommand(new ChangePhaseCommand(lissajousCurve, statusTable[i][8], 2))));
-
-        //Wait for specified time, * 1000 is to convert value in milliseconds
-        sleep(statusTable[i][9] * 1000);
+        io.send(JSON.stringify(commandSerializer.serialize(new ChangePhaseCommand(lissajousCurve, statusTable[countCalls][2], 0))));
+        io.send(JSON.stringify(commandSerializer.serialize(new ChangePhaseCommand(lissajousCurve, statusTable[countCalls][5], 1))));
+        io.send(JSON.stringify(commandSerializer.serialize(new ChangePhaseCommand(lissajousCurve, statusTable[countCalls][8], 2))));
     }
-
+    else{
+        console.log("Quit performance");
+        countCalls = -1;
+        return;
+    }
+    setTimeout(automaticSequence, statusTable[countCalls][9] * 1000);
 }
 
 /// Help function to set the automatic evolution of the curve
-function sleep(milliseconds) {
-    const date = Date.now();
-    let currentDate = null;
-    do {
-        currentDate = Date.now();
-    } while (currentDate - date < milliseconds);
-}
+// function sleep(milliseconds) {
+//     const date = Date.now();
+//     let currentDate = null;
+//     do {
+//         currentDate = Date.now();
+//     } while (currentDate - date < milliseconds);
+// }
 
 
 //// COMMUNICATION WITH PYTHON
 
 function sendToPy() {
     //creates the new likes array every session
+    console.log("Sending likes to python");
 
     var spawn = require('child_process').spawn,
         py = spawn('python', ['./python_script/compute.py']),
@@ -378,13 +388,13 @@ function sendToPy() {
         dataString += data.toString();
     });
     py.stdout.on('end', function() {
-        console.log('i will perform: ', dataString);
+        // console.log('i will perform: ', dataString);
 
         //Regular expression to extract floating point numbers from the string built in python
         var regex = /[+-]?\d+(\.\d+)?/g;
         status = new Array(10)
         if (dataString != '') {
-            var statusTable = []
+            statusTable = []
             floats = dataString.match(regex).map(function(v) { return parseFloat(v) });
             //Values should be saved in arrays that represent status of the curve and time
             for (i = 0; i < floats.length / 10; i++) {
@@ -397,15 +407,17 @@ function sendToPy() {
                 statusTable.push(status)
             }
 
-            console.log(statusTable)
+            // console.log(statusTable)
             numberOfRepresentedFigures = floats.length / 10;
+            console.log("Data received from python, starting sequence");
+            automaticSequence();
         }
     });
 
 
     py.stdin.write(JSON.stringify(data));
     py.stdin.end();
-    askPython();
+    // askPython();
     likesArray = [];
 }
 
@@ -414,4 +426,4 @@ function askPython() {
     setTimeout(sendToPy, 5000); // ms of the repetition
 }
 
-askPython()
+// askPython()
