@@ -379,7 +379,7 @@ function sendToPy() {
     });
     py.stdout.on('end', function() {
         console.log('i will perform: ', dataString);
-
+/*
         //Regular expression to extract floating point numbers from the string built in python
         var regex = /[+-]?\d+(\.\d+)?/g;
         status = new Array(10)
@@ -399,7 +399,7 @@ function sendToPy() {
 
             console.log(statusTable)
             numberOfRepresentedFigures = floats.length / 10;
-        }
+        }*/
     });
 
 
