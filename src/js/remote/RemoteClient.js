@@ -92,22 +92,30 @@ export default class RemoteClient extends Observable {
             switch (state) {
                 case 0:
                     State.innerHTML = "Next Show in:";
-                    document.getElementById('myDetails').removeEventListener('click', handleTouch);
+                    document.getElementById("myDetails").style.pointerEvents = 'auto';
+
                     break;
                 case 1:
                     State.innerHTML = "1st Generation";
-                    document.getElementById('myDetails').addEventListener('click', handleTouch);
+                    document.getElementById("myDetails").style.pointerEvents = 'none';
+                    document.getElementById("myDetails").children[0].innerHTML = "Locked ";
 
                     break;
                 case 2:
                     State.innerHTML = "2nd Generation";
-
+                    document.getElementById("myDetails").style.pointerEvents = 'none';
+                    document.getElementById("myDetails").children[0].innerHTML = "Locked ";
                     break;
                 case 3:
                     State.innerHTML = "3rd Generation";
+                    document.getElementById("myDetails").style.pointerEvents = 'none';
+                    document.getElementById("myDetails").children[0].innerHTML = "Locked ";
                     break;
+
                 case 4:
                     State.innerHTML = "4th Generation";
+                    document.getElementById("myDetails").style.pointerEvents = 'none';
+                    document.getElementById("myDetails").children[0].innerHTML = "Locked ";
                     break;
             }
 
@@ -118,20 +126,17 @@ export default class RemoteClient extends Observable {
             }
             document.getElementById('countdown').innerHTML = minutes + ":" + remainingSeconds;
             if (seconds == 0 && reset == true) { ///CONTROLS ON
-                // console.log("CONTROLS ON");
+
                 document.getElementById("myDetails").open = true;
-                document.getElementById('myDetails').removeEventListener('click', handleTouch);
+
                 State.innerHTML = "Next Generation in:";
             } else if (seconds == 0 && reset == false) { ///CONTROLS OFF
-                console.log("CONTROLS OFF");
+
                 document.getElementById("myDetails").open = false;
-                document.getElementById('myDetails').addEventListener('click', handleTouch);
-
             }
 
-            function handleTouch(e) {
-                e.preventDefault();
-            }
+
+
         }
         //////////////////////////!!!!!!!/////////////
 }
