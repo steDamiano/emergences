@@ -19,7 +19,6 @@ class Lissajous extends Observable {
         this.offsetX = 0.0;
         this.offsetY = 0.0;
         this.offsetZ = 0.0;
-        // SET INTO VIEW?
         this.meterial = "Basic";
         this.color = "#ff0000";
         this.meshType = "Line";
@@ -83,40 +82,32 @@ class Lissajous extends Observable {
     }
 
     setFrequency(id, freq) {
-        // console.log(id);
         var r = id % 3;
-        // console.log(r);
         switch (id % 3) {
             case (0):
                 this.fx = freq;
                 break;
-                // console.log(this.fx);
             case (1):
                 this.fy = freq;
                 break;
             case (2):
                 this.fz = freq;
         }
-        //console.log(this.fx + ' ' + this.fy + ' ' + this.fz);
 
         this.emit('FrequencyChanged', this);
     }
     setDamping(id, damp) {
-        // console.log(id);
         var r = id % 3;
-        //console.log(r);
         switch (id % 3) {
             case (0):
                 this.dampX = damp;
                 break;
-                // console.log(this.fx);
             case (1):
                 this.dampY = damp;
                 break;
             case (2):
                 this.dampZ = damp;
         }
-        //console.log(this.dampX + ' ' + this.dampY + ' ' + this.dampZ);
 
         this.emit('DampingChanged', this);
     }
@@ -151,9 +142,9 @@ class Lissajous extends Observable {
         this.emit('AmplitudeChanged', this);
     }
 
-    setParameters(fx, fy, fz, ax, ay, az, phx, phy, phz) {
-        // To be implemented -> set all parameters for generative part
-    }
+    // setParameters(fx, fy, fz, ax, ay, az, phx, phy, phz) {
+    //     // To be implemented -> set all parameters for generative part
+    // }
 
     resetInitialState(){
         this.sizeX = 0.1,

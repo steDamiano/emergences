@@ -3,7 +3,6 @@ class ChangeFrequencyCommand{
         this.lissajous = lissajous;
         this.freq = freq;
         this.className = 'ChangeFrequencyCommand';
-        // console.log(this.freq);
         // *** Here user ID will be set to know which freq should be changed *** // 
         this.id = id;
     }

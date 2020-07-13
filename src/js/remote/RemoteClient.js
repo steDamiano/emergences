@@ -29,8 +29,6 @@ export default class RemoteClient extends Observable {
         });
 
         this.socket.on('client ID', (data) => {
-            // console.log("Assigning ID");
-            // console.log(data);
             this.id = data.position;
             this.address = data.address;
 
@@ -54,7 +52,6 @@ export default class RemoteClient extends Observable {
         });
 
         this.socket.on('Time', obj => {
-            //console.log(obj);
             this.timer(obj.time, obj.reset, obj.state);
         });
 
@@ -83,7 +80,6 @@ export default class RemoteClient extends Observable {
         this.socket.send(JSON.stringify(payload));
     }
 
-    //////////////////////////!!!!!!!/////////////
     timer(obj, r, state) {
 
             var seconds = obj;
@@ -138,5 +134,4 @@ export default class RemoteClient extends Observable {
 
 
         }
-        //////////////////////////!!!!!!!/////////////
 }

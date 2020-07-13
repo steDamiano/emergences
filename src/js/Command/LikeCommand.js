@@ -1,7 +1,6 @@
 class LikeCommand{
     constructor(lissajous, id){
         this.lissajous = lissajous;
-        // *** Here user ID will be set to know which freq should be changed *** // 
         this.id = id;
 
         this.fx = 0;

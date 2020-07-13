@@ -104,6 +104,7 @@ const ChangeAmplitudeCommand = require('./js/Command/ChangeAmplitudeCommand');
 const ChangePhaseCommand = require('./js/Command/ChangePhaseCommand');
 const { serialize } = require('v8');
 const { count } = require('console');
+const { exec } = require('child_process');
 var udpPort = new osc.UDPPort({
     // This is the port we're listening on.
     localAddress: "127.0.0.1",
@@ -340,16 +341,33 @@ function automaticSequence() {
         console.log("Represent figure: ", countCalls);
 
         io.send(JSON.stringify(commandSerializer.serialize(new ChangeFrequencyCommand(lissajousCurve, statusTable[countCalls][3], 1))));
+        executeCommand(commandSerializer.serialize(new ChangeFrequencyCommand(lissajousCurve, statusTable[countCalls][3], 1)));
+        
         io.send(JSON.stringify(commandSerializer.serialize(new ChangeFrequencyCommand(lissajousCurve, statusTable[countCalls][0], 0))));
+        executeCommand(commandSerializer.serialize(new ChangeFrequencyCommand(lissajousCurve, statusTable[countCalls][0], 0)));
+
         io.send(JSON.stringify(commandSerializer.serialize(new ChangeFrequencyCommand(lissajousCurve, statusTable[countCalls][6], 2))));
+        executeCommand(commandSerializer.serialize(new ChangeFrequencyCommand(lissajousCurve, statusTable[countCalls][6], 2)));
         // //Amplitude changes
         io.send(JSON.stringify(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, statusTable[countCalls][1], 0))));
+        executeCommand(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, statusTable[countCalls][1], 0)));
+
         io.send(JSON.stringify(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, statusTable[countCalls][4], 1))));
+        executeCommand(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, statusTable[countCalls][4], 1)));
+
         io.send(JSON.stringify(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, statusTable[countCalls][7], 2))));
+        executeCommand(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, statusTable[countCalls][7], 2)));
+
         //Phase Changes
         io.send(JSON.stringify(commandSerializer.serialize(new ChangePhaseCommand(lissajousCurve, statusTable[countCalls][2], 0))));
+        executeCommand(commandSerializer.serialize(new ChangePhaseCommand(lissajousCurve, statusTable[countCalls][2], 0)));
+
         io.send(JSON.stringify(commandSerializer.serialize(new ChangePhaseCommand(lissajousCurve, statusTable[countCalls][5], 1))));
+        executeCommand(commandSerializer.serialize(new ChangePhaseCommand(lissajousCurve, statusTable[countCalls][5], 1)));
+
         io.send(JSON.stringify(commandSerializer.serialize(new ChangePhaseCommand(lissajousCurve, statusTable[countCalls][8], 2))));
+        executeCommand(commandSerializer.serialize(new ChangePhaseCommand(lissajousCurve, statusTable[countCalls][8], 2)));
+
     }
     else{
         console.log("Quit performance");
@@ -364,14 +382,6 @@ function automaticSequence() {
     setTimeout(automaticSequence, statusTable[countCalls][9] * 1000);
 }
 
-/// Help function to set the automatic evolution of the curve
-// function sleep(milliseconds) {
-//     const date = Date.now();
-//     let currentDate = null;
-//     do {
-//         currentDate = Date.now();
-//     } while (currentDate - date < milliseconds);
-// }
 
 
 //// COMMUNICATION WITH PYTHON

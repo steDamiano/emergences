@@ -20,8 +20,6 @@ export default class LissajousViewMediator extends ViewMediator {
     }
 
     getCurveObject(lissajous) {
-        //this.clearMesh(this.meshObject);
-        // console.log("Vertices are: " + lissajous.numCurveVertices);
         var lissajousGeometry = new THREE.BufferGeometry();
         this.lissajousGeometry = lissajousGeometry;
         var lineMaterial = new THREE.LineBasicMaterial({
@@ -31,7 +29,6 @@ export default class LissajousViewMediator extends ViewMediator {
         var line = new THREE.Line(lissajousGeometry, lineMaterial);
         var positions = new Float32Array(40000 * 3);
         this.positions = positions;
-        // console.log(positions);
         line.castShadow = true;
         this.lissajousGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 

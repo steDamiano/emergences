@@ -9,8 +9,6 @@ export default class LissajousRemoteMediator{
     }
 
     initialize(status){
-        // Do we need it?
-        // console.log(status);
         if(status){
             this.lissajous.setFrx(status.fx);
             this.lissajous.setFry(status.fy);
