@@ -104,18 +104,21 @@ export default class MainView {
         // mesh.visible = true;
         this.renderingContext.scene.add(mesh);
         /////*********************************////////
-        //  this.renderingContext.renderer.xr.addEventListener('sessionstart',
-        //      function(ev) {
-        //          console.log('sessionstart', ev);
-        //          mesh.position.set(0, 0, -0.5);
-        //
-        //      });
-        //  this.renderingContext.renderer.xr.addEventListener('sessionend',
-        //      function(ev) {
-        //          console.log('sessionend', ev);
-        //          mesh.position.set(0, 0, 0);
-        //
-        //      });
+         this.renderingContext.renderer.xr.addEventListener('sessionstart',
+             function(ev) {
+                //  console.log('sessionstart', ev);
+                 mesh.position.set(0, 0, 4);
+                 setTimeout(function(){
+                     mesh.position.set(0, 0, -0.5);
+                 }, 2000);
+        
+             });
+         this.renderingContext.renderer.xr.addEventListener('sessionend',
+             function(ev) {
+                 console.log('sessionend', ev);
+                 mesh.position.set(0, 0, 0);
+        
+             });
         /////*********************************////////
 
 
