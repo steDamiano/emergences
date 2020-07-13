@@ -197,7 +197,7 @@ def main():
                         if chance <= rate:
                             if index == 0:
                                 # frequency
-                                element[0] = np.random.uniform(1, 4, 1)
+                                element[0] = np.random.uniform(np.log10(20), np.log10(5000), 1)
                             if index == 1:
                                 element[1] = np.random.uniform(0, 0.1, 1)
                             if index == 2:
