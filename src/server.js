@@ -14,7 +14,7 @@ var noClientsFlag = true;
 // server.listen(8081, '0.0.0.0', () =>{
 //     console.log("Server listening on port 8081");
 // });
-var time = 120;
+var time = 15;
 var reset = false;
 var state = 0;
 
@@ -367,14 +367,14 @@ function automaticSequence() {
         io.send(JSON.stringify(commandSerializer.serialize(new ChangeFrequencyCommand(lissajousCurve, statusTable[countCalls][6], 2))));
         executeCommand(commandSerializer.serialize(new ChangeFrequencyCommand(lissajousCurve, statusTable[countCalls][6], 2)));
         // //Amplitude changes
-        io.send(JSON.stringify(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, statusTable[countCalls][1], 0))));
-        executeCommand(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, statusTable[countCalls][1], 0)));
+        io.send(JSON.stringify(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, Math.min(statusTable[countCalls][1], 0.1), 0))));
+        executeCommand(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, Math.min(statusTable[countCalls][1], 0.1), 0)));
 
-        io.send(JSON.stringify(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, statusTable[countCalls][4], 1))));
-        executeCommand(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, statusTable[countCalls][4], 1)));
+        io.send(JSON.stringify(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, Math.min(statusTable[countCalls][4], 0.1), 1))));
+        executeCommand(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, Math.min(statusTable[countCalls][4], 0.1), 1)));
 
-        io.send(JSON.stringify(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, statusTable[countCalls][7], 2))));
-        executeCommand(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, statusTable[countCalls][7], 2)));
+        io.send(JSON.stringify(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, Math.min(statusTable[countCalls][7], 0.1), 2))));
+        executeCommand(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, Math.min(statusTable[countCalls][7], 0.1), 2)));
 
         //Phase Changes
         io.send(JSON.stringify(commandSerializer.serialize(new ChangePhaseCommand(lissajousCurve, statusTable[countCalls][2], 0))));
