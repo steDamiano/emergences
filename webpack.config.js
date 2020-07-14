@@ -35,18 +35,12 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      // title: "Webpack Output",
       template: 'src/index.html'
     }),
     new CleanWebpackPlugin(),
     new webpack.ProvidePlugin({
       'THREE': 'three',
     }),
-    // new BrowserSyncPlugin({
-    //   host: 'localhost',
-    //   port: '8080',
-    //   proxy: 'https://localhost:8080'
-    // }),
   ],
   devServer: {
     https: true,

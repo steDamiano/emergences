@@ -4,6 +4,202 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 
 <head>
+    <style>
+        .but {
+            width: 100%;
+            height: 100%;
+            /* display: inline-block; */
+        }
+        
+        body {
+            background-color: black;
+            font-family: Monospace;
+            margin: 0px;
+            overflow: hidden;
+        }
+        
+        canvas {
+            display: block;
+        }
+        
+        details {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+        }
+        
+        .left,
+        details {
+            z-index: 90;
+        }
+        
+        .left {
+            display: fixed;
+            flex-flow: column wrap;
+        }
+        
+        .oscillator {
+            background-color: rgba(255, 255, 255, 0.75);
+            box-shadow: 5px 5px 5px rgb(200, 200, 200);
+            margin: 5px;
+            padding: 5px;
+            border-left: 5px solid 1px;
+            border-radius: 10px 10px 10px 10px;
+            background-color: rgba(320, 90, 90, 0.3);
+            box-shadow: inset 5px 50px 50px rgba(228, 9, 9, 0.5), 0 0 10px 4px rgba(255, 255, 255, 0.4);
+        }
+        
+        .frequency,
+        .damping,
+        .amplitude,
+        .phase {
+            font-family: 'Press Start 2P';
+            font-size: 8px;
+            padding: 15px;
+            color: rgb(255, 255, 255);
+        }
+        
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 5px;
+            border-radius: 5px;
+            background: #000000;
+            outline: none;
+            opacity: 0.5;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+            margin-top: 20px;
+        }
+        
+        .slider:hover {
+            opacity: 1;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: hsl(0, 44%, 25%);
+            border: 2px solid rgb(255, 0, 0);
+            cursor: pointer;
+            opacity: 0.9;
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: rgb(53, 12, 12);
+            cursor: pointer;
+        }
+        
+        .summary {
+            font-family: 'Press Start 2P';
+            font-size: 8px;
+            width: 200px;
+            height: 11px;
+            color: rgb(255, 255, 255);
+        }
+        
+        summary::-webkit-details-marker {
+            display: none;
+        }
+        
+        details[close]>summary:before {
+            content: ">";
+            font-size: 8px;
+            margin-left: 4px;
+            margin-right: 7px;
+            top: -10px;
+        }
+        
+        details[open]>summary:before {
+            content: "X";
+            font-size: 8px;
+            margin-left: 4px;
+            margin-right: 7px;
+        }
+        
+        .scene-container {
+            background-color: rgb(255, 255, 255);
+            display: block;
+        }
+        
+        *:focus {
+            outline: 0 !important;
+        }
+        
+        .TimerText {
+            position: absolute;
+            font-family: 'Press Start 2P';
+            color: rgb(255, 0, 0);
+            font-size: 10px;
+            font-weight: 100;
+            height: 0px;
+            right: 0px;
+            left: 0px;
+            line-height: 100px;
+            text-align: center;
+            top: 77%;
+            z-index: 2;
+        }
+        
+        time {
+            font-family: 'Press Start 2P';
+            color: rgb(255, 255, 255);
+            font-size: 12px;
+            font-weight: 100;
+            height: 0px;
+            right: 0px;
+            left: 0px;
+            line-height: 100px;
+            position: absolute;
+            text-align: center;
+            top: 80%;
+            z-index: 2;
+        }
+        
+        .heart {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            stroke-width: 2;
+            background-color: transparent;
+            border-radius: 50px;
+            left: 80%;
+            width: 50px;
+            height: 50px;
+        }
+        
+        .heart:active::before {
+            /* random(5); */
+            -webkit-animation-play-state: paused;
+            border-radius: 500%;
+            opacity: 0;
+        }
+        
+        .heart::before {
+            content: "";
+            display: block;
+            transition: all 200ms;
+            -webkit-animation: pulse 1s steps(1) infinite;
+            width: 5px;
+            height: 5px;
+            margin: -5px 0 0 -5px;
+            box-shadow: 10px -10px #8e1a19, 15px -10px #ac0500, 25px -10px #f73f0c, 30px -10px #fa5f27, 5px -5px #740100, 10px -5px #8e0500, 15px -5px #8e1918, 20px -5px #ca1300, 25px -5px #f34f2b, 30px -5px #df351f, 35px -5px #f77c2a, 5px 0px #4b0000, 10px 0px #690100, 15px 0px #8e0f0b, 20px 0px #bf1000, 25px 0px #f84010, 30px 0px #f04222, 35px 0px #fa5724, 5px 5px #451312, 10px 5px #5a0100, 15px 5px #840e0c, 20px 5px #a51d1a, 25px 5px #ed2805, 30px 5px #d9321e, 35px 5px #f44622, 10px 10px #3b0000, 15px 10px #5d1a1b, 20px 10px #8e1a19, 25px 10px #a80700, 30px 10px #b90a00, 15px 15px #3d0000, 20px 15px #551415, 25px 15px #670100, 20px 20px #340000;
+        }
+        
+        @-webkit-keyframes pulse {
+            50% {
+                -webkit-filter: blur(0.6px);
+                -webkit-transform: translate(0px, 1px);
+            }
+        }
+    </style>
+
     <div class="container">
         <div class="col1">
             <template class="oscillator-template">
