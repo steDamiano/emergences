@@ -60,7 +60,7 @@ def main():
                 #rescaling the frequency range of the population -- it's the logarithm already! 10^1 < f < 10^4
                 dna[0] = np.random.uniform(np.log10(20), np.log10(5000), 1)
                 # amplitude range stays the same
-                dna[1] = np.random.uniform(0, 0.1, 1)
+                dna[1] = np.random.uniform(0.001, 0.1, 1)
                 # phase/offset range
                 dna[2] = dna[2] * 100
 
@@ -199,7 +199,7 @@ def main():
                                 # frequency
                                 element[0] = np.random.uniform(np.log10(20), np.log10(5000), 1)
                             if index == 1:
-                                element[1] = np.random.uniform(0, 0.1, 1)
+                                element[1] = np.random.uniform(0.001, 0.1, 1)
                             if index == 2:
                                 element[2] = np.random.uniform(0, 100, 1)
             return pop
