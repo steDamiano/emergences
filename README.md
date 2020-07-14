@@ -1,12 +1,12 @@
 # [e]mergences
 
-# concept 
+# Concept 
 The project aims at creating an audio visual installation which enables to visually represent the sound being played by the users on a synth. 
 The installation is set in a dark, empty room with screens on its walls and ceiling. The walls and ceiling are made by big screens, and behing every screen is located a speaker covered with a thin film which vibrates with sound. On the film a small mirror projects on the screen a laser pointed on it. With the sound the laser produces curves which can be seen inside the room.
 Users can interact with the installation using their smartphones through a website, without having to install any third party application on them: with their smartphones users control synthesizers connected with the speakers and produce sounds which can be visualized with the lasers projecting on the screens.
 Inside the room the users can also enable the AR view on their smartphones: this allows them to see in an immersive, augmented reality context, a 3D model of the sounds they are producing, based on the same physical principle as the lasers projection (lissajous curves).
 
-# technology
+# Technology
 The application is the core of the installation, enabling the users to interact with it, control it and also to see its AR part. 
 It is built using three languages: 
 - javascript for the frontend and the backend (node.js)
@@ -25,11 +25,11 @@ The figure is built using the three.js library for graphical rendering, and can 
 3. Automatic Generation
 The installation runs in two separate stages: in the first stage users are free to control the application and play with it, expressing likes using a button to the figures they like more. The likes are sent to the server and stored in an array which, at the end of the first stage, is sent to the python process. This process generates a sequence of figures to be represented during a second stage, based on the likes array. The algorithm used for automatic generation is based on a genetic algorithms that generates four generations of curves that shares common features with the "liked" configurations. It uses the scipy and numpy libraries.
 
-# install and run 
+# Install and run 
 The application at the moment is not deployed to a website, but the files to run it in a local network are present in the folder. Since WebXR requires the use of HTTPS, self generated certificates are used to set up the server. To run the application an installed python3 is required, with the libraries numpy and scipy installed as well. 
 
 Then, download the project, edit line 14 in 'main.js' substituting your local machine IP and run following commands in a terminal:
-'''sh
+'''javascript
 npm install
 node src/server
 npm run dev
