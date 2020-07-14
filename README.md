@@ -30,9 +30,8 @@ The application at the moment is not deployed to a website, but the files to run
 
 Then, download the project, edit line 14 in 'main.js' substituting your local machine IP and run following commands in a terminal:<br>
 
-<code> npm install<br>
- node src/server<br>
- npm run dev<br>
-</code>
+    npm install
+    node src/server
+    npm run dev
 
 Project built for the course Creative Programming and Computing @ Polimi, academic year 2019/2020
