@@ -46,7 +46,6 @@ export default class MainView {
         const composer = this.renderingContext.composer;
         const object3D = this.LissajousViewMediator.object3D;
         scene.add(object3D);
-        // var camera = this.renderingContext.camera;
 
         this.controls = new OrbitControls(
             this.renderingContext.camera,
@@ -94,14 +93,10 @@ export default class MainView {
             wireframe: true
         });
         this.material = material;
-        //var lineMaterial = new THREE.LineBasicMaterial({
-        //    color: "#FF000",
-        //    linewidth: 1
-        //});
+
         var mesh = new THREE.Mesh(this.LissajousViewMediator.lissajousGeometry, material);
         mesh.position.setFromMatrixPosition(this.reticle.matrix);
         mesh.position.set(0, 0, 0);
-        // mesh.visible = true;
         this.renderingContext.scene.add(mesh);
         /////*********************************////////
          this.renderingContext.renderer.xr.addEventListener('sessionstart',
@@ -196,9 +191,8 @@ export default class MainView {
                 this.animate(this.LissajousViewMediator.positions),
 
             );
-            //this.renderingContext.composer.render(); /// SUPER EFFETTO WOW CHE DA PROBLEMI
         }
-
+            
     }
 
 
@@ -208,7 +202,7 @@ export default class MainView {
         this.controller.onFreqChange(val);
         // This command should be in controller
         // this.lissajous.fx = val / 10;
-        //this.animate(this.LissajousViewMediator.positions);
+        this.animate(this.LissajousViewMediator.positions);
     }
 
     onAmpChange() {

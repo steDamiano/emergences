@@ -1,15 +1,7 @@
-import {
-    ARButton
-} from '../../../node_modules/three/examples/jsm/webxr/ARButton'
-import {
-    EffectComposer
-} from '../../../node_modules/three/examples/jsm/postprocessing/EffectComposer.js';
-import {
-    RenderPass
-} from '../../../node_modules/three/examples/jsm/postprocessing/RenderPass.js';
-import {
-    UnrealBloomPass
-} from '../../../node_modules/three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { ARButton } from '../../../node_modules/three/examples/jsm/webxr/ARButton'
+import { EffectComposer } from '../../../node_modules/three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from '../../../node_modules/three/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from '../../../node_modules/three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
 
 export default class RenderingContext {
@@ -28,8 +20,6 @@ export default class RenderingContext {
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(15, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.set(0, 0, 2);
-        //set the orbit controls
-
 
         var light = new THREE.DirectionalLight("#ffffff");
         light.position.set(0, 0, 1).normalize();
@@ -40,20 +30,12 @@ export default class RenderingContext {
             antialias: true,
             alpha: true
         });
-        //renderer.setClearColor(0xffffff);
         renderer.setPixelRatio(devicePixelRatio);
         renderer.setSize(innerWidth, innerHeight);
-        //renderer.setClearColor(0xffffff);
         renderer.shadowMap.enabled = false;
         renderer.gammaOutput = true;
         renderer.xr.enabled = true;
         document.body.appendChild(renderer.domElement);
-
-
-
-        //////^^^^^^^^^^^^^^^^^^^/////////////
-
-
 
         // the plane for the shadow
         const planeGeometry = new THREE.PlaneGeometry(2000, 2000);
@@ -74,8 +56,7 @@ export default class RenderingContext {
 
         document.querySelector(".scene-container").appendChild(renderer.domElement);
 
-        scene.add(camera); //.add(plane).add(helper);
-
+        scene.add(camera);
 
         let AR = document.body.appendChild(ARButton.createButton(renderer, {
             optionalFeatures: ["dom-overlay", 'dom-overlay-for-handheld-ar'],

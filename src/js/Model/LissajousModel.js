@@ -3,7 +3,6 @@ const Observable = require('../../Observable');
 class Lissajous extends Observable {
     constructor() {
         super();
-        //controllable parameters
         this.sizeX = 0.1,
         this.sizeY = 0.1,
         this.sizeZ = 0.1,
@@ -142,9 +141,6 @@ class Lissajous extends Observable {
         this.emit('AmplitudeChanged', this);
     }
 
-    // setParameters(fx, fy, fz, ax, ay, az, phx, phy, phz) {
-    //     // To be implemented -> set all parameters for generative part
-    // }
 
     resetInitialState(){
         this.sizeX = 0.1,

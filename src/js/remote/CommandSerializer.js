@@ -3,6 +3,11 @@ const ChangeFrequencyCommand = require('../Command/ChangeFrequencyCommand');
 const ChangePhaseCommand = require('../Command/ChangePhaseCommand');
 const ChangeDampingCommand = require('../Command/ChangeDampingCommand');
 
+/**
+ * Commands are stored and passed using JSON format.
+ * serialize() creates JSON formatted string from Command class
+ * deSerialize() reads JSON formatted string and produces Command class
+ */
 class CommandSerializer {
     constructor(lissajous) {
         this.lissajous = lissajous;

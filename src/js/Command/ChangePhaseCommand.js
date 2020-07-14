@@ -3,7 +3,6 @@ class ChangePhaseCommand {
         this.lissajous = lissajous;
         this.phase = phase;
         this.className = 'ChangePhaseCommand';
-        // *** Here user ID will be set to know which phase should be changed *** //
         this.id = id;
     }
 

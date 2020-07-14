@@ -1,6 +1,12 @@
-// console.log("Running");
 const Lissajous = require('./js/Model/LissajousModel');
 const CommandSerializer = require('./js/remote/CommandSerializer');
+
+const ChangeFrequencyCommand = require('./js/Command/ChangeFrequencyCommand');
+const ChangeAmplitudeCommand = require('./js/Command/ChangeAmplitudeCommand');
+const ChangePhaseCommand = require('./js/Command/ChangePhaseCommand');
+const { serialize } = require('v8');
+const { count } = require('console');
+const { exec } = require('child_process');
 
 const lissajousCurve = new Lissajous();
 const commandSerializer = new CommandSerializer(lissajousCurve);
@@ -11,10 +17,8 @@ const app = require('express')();
 var connectedCounter = 0;
 var clients_connected = [];
 var noClientsFlag = true;
-// server.listen(8081, '0.0.0.0', () =>{
-//     console.log("Server listening on port 8081");
-// });
-var time = 15;
+
+var time = 120;
 var reset = false;
 var state = 0;
 
@@ -22,7 +26,6 @@ var state = 0;
 var numberOfRepresentedFigures = 0;
 var statusTable = [];
 
-////////////////////////////////////////
 function secondPassed() {
 
     if (time == 0 && reset == false) {
@@ -38,7 +41,6 @@ function secondPassed() {
         time = 180;
         reset = !reset;
         state = 0;
-        // automaticSequence();
         shoot()
     } else {
         time--;
@@ -72,8 +74,8 @@ function shoot() {
         state: state
     });
 }
-//////////////////////////////////////
-//HTTPS
+
+//HTTPS server setup
 const fs = require('fs');
 const https = require('https');
 const {
@@ -93,18 +95,12 @@ const io = require('socket.io').listen(server);
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
-    // res.end("Ciao, dal server");
 });
 
 ///OSC Connection
-// Osc communication
+// Osc communication setup
 var osc = require("osc");
-const ChangeFrequencyCommand = require('./js/Command/ChangeFrequencyCommand');
-const ChangeAmplitudeCommand = require('./js/Command/ChangeAmplitudeCommand');
-const ChangePhaseCommand = require('./js/Command/ChangePhaseCommand');
-const { serialize } = require('v8');
-const { count } = require('console');
-const { exec } = require('child_process');
+
 var udpPort = new osc.UDPPort({
     // This is the port we're listening on.
     localAddress: "127.0.0.1",
@@ -126,8 +122,7 @@ io.on('connection', (socket) => {
     noClientsFlag = false;
     alreadyConnected = false;
     console.log('Client connected');
-    console.log("noclientsflag: " + noClientsFlag)
-        // Assign ID to client connected, clientID is the position of the client in the clients_connected array
+    // Assign ID to client connected, clientID is the position of the client in the clients_connected array
     for (i = 0; i < clients_connected.length; i++) {
         if (clients_connected[i] == socket.handshake.address) {
             alreadyConnected = true;
@@ -153,6 +148,8 @@ io.on('connection', (socket) => {
     }
 
     var pos = clients_connected.indexOf(socket.handshake.address);
+
+    // Client ID is used to identify client and send right commands to SC
     io.to(socket.id).emit('client ID', {
         position: pos,
         address: socket.handshake.address,
@@ -161,11 +158,9 @@ io.on('connection', (socket) => {
 
     // Get initial frequency of client, and send it to supercollider synth
     socket.on('InitialFreq', function getFreq(freq) {
-        // console.log("I am server, I receive freq: ", freq);
 
+        // Only first three users can control audio, others are just spectators who can put like
         if (pos < 3) {
-            // console.log("I send this freq: ", initialFrequency);
-
             var msg = {
                 address: "/button/1",
                 args: [{
@@ -182,7 +177,7 @@ io.on('connection', (socket) => {
                     }
                 ]
             };
-
+            // start superCollider oscillator controlled by client ID
             console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
             udpPort.send(msg);
 
@@ -190,27 +185,20 @@ io.on('connection', (socket) => {
 
     });
 
-    /////////////////
     io.to(socket.id).emit('Ispector', {
         position: pos,
         address: socket.handshake.address
     });
 
-
-    ///////////////////
-    // start superCollider oscillator controlled by client ID
-
-
-
     var terminationCommand = null;
 
+    // Evaluation of commands received by clients
     socket.on('message', function incoming(message) {
         var payload = JSON.parse(message);
-        // console.log("Message: \n", payload);
         var serializedCommand = JSON.stringify(payload.command);
+        // If command acts on curve execute it on server model and broadcast it to other clients
         if (payload.type == 'RUN') {
             executeCommand(JSON.parse(serializedCommand));
-            // console.log(serializedCommand);
             socket.broadcast.send(serializedCommand);
         } else if (payload.type == 'ON_DISCONNECT') {
             terminationCommand = serializedCommand;
@@ -218,21 +206,15 @@ io.on('connection', (socket) => {
     });
 
     socket.on('clickedLike', function getLike(message) {
-        /// HERE Elaboration of likeing should be made: lissajousCurve contains state of curve at the moment of like.
-        // console.log("Lissajous actual state: " + lissajousCurve.fx, +" " + lissajousCurve.fy + " " + lissajousCurve.fz);
-
-        // Build actual state to send to python: {[fx, ax, phx], [fy, ay, phy], [fz, az, phz]}
+        // Build actual status to send to python: {[fx, ax, phx], [fy, ay, phy], [fz, az, phz]}
         var xAxis = [lissajousCurve.fx, lissajousCurve.sizeX, lissajousCurve.phaseX];
         var yAxis = [lissajousCurve.fy, lissajousCurve.sizeY, lissajousCurve.phaseY];
         var zAxis = [lissajousCurve.fz, lissajousCurve.sizeZ, lissajousCurve.phaseZ];
 
         var status = [xAxis, yAxis, zAxis];
-        // EDIT WITH STATUS ARRAY
+        // Liked status is pushed in the array of liked curves which will be used by python
         likesArray.push(status)
-        console.log(status);
     });
-
-    // Clients should be initialized to actual state
 
     socket.on('disconnect', function() {
         var pos;
@@ -247,7 +229,7 @@ io.on('connection', (socket) => {
             }
         }
 
-        // stop superCollider oscillator associated to client ID
+        // stop superCollider oscillator associated to client ID, only first 3 clients have active synth
         if (pos != null && pos < 3) {
             // Osc stop
             var msg = {
@@ -263,13 +245,14 @@ io.on('connection', (socket) => {
                 ]
             };
 
-            console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
+            // console.log("Sending message", msg.address, msg.args, "to", udpPort.options.remoteAddress + ":" + udpPort.options.remotePort);
             udpPort.send(msg);
         }
 
         console.log("Client disconnected");
         console.log(clients_connected);
 
+        // if noClientsFlag everyone has disconnected so initial status should be reset for new performance
         if (noClientsFlag) {
             //Reset lissajousCurve to initial state
             console.log("Resetting curve");
@@ -279,12 +262,13 @@ io.on('connection', (socket) => {
     });
 });
 
+// Server executes commands received by clients on its own model, to keep updated with changes and sync clients
 function executeCommand(serializedCommand) {
     const command = commandSerializer.deserialize(serializedCommand);
 
     if (command) {
         var type = command.className;
-        //If freq command send change freq message to SC
+        //If freqChange command send change freq message to SC
         if (type == 'ChangeFrequencyCommand') {
             // send message
             var msg = {
@@ -305,7 +289,7 @@ function executeCommand(serializedCommand) {
         }
 
 
-        //If amp command send change amp message to SC
+        //If ampChange command send change amp message to SC
         else if (type == 'ChangeAmplitudeCommand') {
             // send message
             var msg = {
@@ -325,6 +309,7 @@ function executeCommand(serializedCommand) {
             udpPort.send(msg);
         }
 
+        // If phaseChange command send change phase message to SC
         else if (type == 'ChangePhaseCommand'){
             var msg = {
                 address: "/slider/phase",
@@ -350,14 +335,19 @@ function executeCommand(serializedCommand) {
     }
 }
 
-// Count how many times the callback has been made, this is the 
+
+/*  Automatic sequence: python curves are saved in statusTable with corresponding representation time
+*   automaticSequence is called numberOfRepresentedFigures times and each time a new figure is shown
+*/
+
+// Count how many times the callback for automatic generation has been made 
 var countCalls = -1;
-/// When timer is out this functions creates the automatic sequence
+
 function automaticSequence() {
     countCalls++;
     if(countCalls < numberOfRepresentedFigures){
         console.log("Represent figure: ", countCalls);
-
+        // Freq Changes
         io.send(JSON.stringify(commandSerializer.serialize(new ChangeFrequencyCommand(lissajousCurve, statusTable[countCalls][3], 1))));
         executeCommand(commandSerializer.serialize(new ChangeFrequencyCommand(lissajousCurve, statusTable[countCalls][3], 1)));
         
@@ -366,7 +356,7 @@ function automaticSequence() {
 
         io.send(JSON.stringify(commandSerializer.serialize(new ChangeFrequencyCommand(lissajousCurve, statusTable[countCalls][6], 2))));
         executeCommand(commandSerializer.serialize(new ChangeFrequencyCommand(lissajousCurve, statusTable[countCalls][6], 2)));
-        // //Amplitude changes
+        // Amplitude Changes (Math.min used to double check output amplitude to avoid damages to speakers)
         io.send(JSON.stringify(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, Math.min(statusTable[countCalls][1], 0.1), 0))));
         executeCommand(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, Math.min(statusTable[countCalls][1], 0.1), 0)));
 
@@ -376,7 +366,7 @@ function automaticSequence() {
         io.send(JSON.stringify(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, Math.min(statusTable[countCalls][7], 0.1), 2))));
         executeCommand(commandSerializer.serialize(new ChangeAmplitudeCommand(lissajousCurve, Math.min(statusTable[countCalls][7], 0.1), 2)));
 
-        //Phase Changes
+        // Phase Changes
         io.send(JSON.stringify(commandSerializer.serialize(new ChangePhaseCommand(lissajousCurve, statusTable[countCalls][2], 0))));
         executeCommand(commandSerializer.serialize(new ChangePhaseCommand(lissajousCurve, statusTable[countCalls][2], 0)));
 
@@ -388,12 +378,14 @@ function automaticSequence() {
 
     }
     else{
+        // All figures represented, quit
         console.log("Quit performance");
         countCalls = -1;
         return;
     }
 
     if(state == 0){
+        // Reset if automatic sequence stage is over
         countCalls = -1;
         return;
     }
@@ -440,9 +432,10 @@ function sendToPy() {
                 statusTable.push(status)
             }
 
-            console.log("Status table: ", statusTable)
+            // console.log("Status table: ", statusTable)
             numberOfRepresentedFigures = floats.length / 10;
-            console.log("Data received from python, starting sequence. I will draw: ", numberOfRepresentedFigures);
+            console.log("Data received from python, starting sequence. I will draw: ", numberOfRepresentedFigures, " figures.");
+            // Once data are collected start automatic sequence stage of performance
             automaticSequence();
         }
     });
@@ -450,13 +443,12 @@ function sendToPy() {
 
     py.stdin.write(JSON.stringify(data));
     py.stdin.end();
-    //askPython();
     likesArray = [];
 }
 
-// recursive function, it's asking python every tot ms
-function askPython() {
-    setTimeout(sendToPy, 5000); // ms of the repetition
-}
+// // recursive function, it's asking python every tot ms
+// function askPython() {
+//     setTimeout(sendToPy, 5000); // ms of the repetition
+// }
 
- //askPython()
+//  //askPython()

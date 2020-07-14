@@ -15,6 +15,7 @@ class LikeCommand{
     }
 
     execute(){
+        // Save status at the moment of call, will be processed by server
         this.fx = this.lissajous.fx;
         this.fy = this.lissajous.fy;
         this.fz = this.lissajous.fz;

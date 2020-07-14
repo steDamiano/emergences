@@ -1,5 +1,3 @@
-import { stat } from "fs";
-
 export default class LissajousRemoteMediator{
     constructor(lissajous, remoteClient){
         this.lissajous = lissajous;
@@ -8,6 +6,7 @@ export default class LissajousRemoteMediator{
         this.remoteClient.addObserver('InitStatus', (status) => this.initialize(status));
     }
 
+    // When initial status is received from server, set the client model to match server one.
     initialize(status){
         if(status){
             this.lissajous.setFrx(status.fx);
@@ -34,10 +33,12 @@ export default class LissajousRemoteMediator{
         this.remoteClient.sendLike();
     }
 
+    // If command is executed locally, sent it to server to broadcast it to other clients
     onCommandExecuted(command){
         this.remoteClient.runCommand(command);
     }
 
+    // If command is received from server, execute it locally
     onCommandReceived(command){
         command.execute();
     }

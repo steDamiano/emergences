@@ -162,7 +162,7 @@ MIDIClient.init;
 
 /*
 (
-SynthDef.new(\adolfo,
+SynthDef.new(\old,
 	{
 		//arg msg; //OSC message
 		arg freq, amp;
