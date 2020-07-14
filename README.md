@@ -29,10 +29,8 @@ The installation runs in two separate stages: in the first stage users are free 
 The application at the moment is not deployed to a website, but the files to run it in a local network are present in the folder. Since WebXR requires the use of HTTPS, self generated certificates are used to set up the server. To run the application an installed python3 is required, with the libraries numpy and scipy installed as well. 
 
 Then, download the project, edit line 14 in 'main.js' substituting your local machine IP and run following commands in a terminal:
-'''javascript
-npm install
-node src/server
-npm run dev
-'''
+> npm install
+> node src/server
+> npm run dev
 
 Project built for the course Creative Programming and Computing @ Polimi, academic year 2019/2020
